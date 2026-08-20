@@ -162,6 +162,16 @@ export default function Team() {
     department: "Technology"
   })
 
+  // Form State for Add Immediately
+  const [showAddImmediateModal, setShowAddImmediateModal] = useState(false)
+  const [immediateForm, setImmediateForm] = useState({
+    name: "",
+    email: "",
+    role: "member" as Role,
+    department: "Technology",
+    password: "",
+  })
+
   const { user: currentUser } = useAuth()
   const canDeleteUsers = currentUser?.role === "super_admin"
 
