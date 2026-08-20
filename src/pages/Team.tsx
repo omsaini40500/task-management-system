@@ -196,16 +196,22 @@ export default function Team() {
 
     try {
       const payload = {
+    try {
+      const u = await api.post<any>("/users", {
         name: inviteForm.name,
         email: inviteForm.email,
-        password: "demo",
         role: inviteForm.role,
-        department_id: inviteForm.department
-      }
-      const u = await api.post<any>("/users", payload)
+        departmentId: inviteForm.department
+      })
       setTeamUsers(prev => [...prev, {
-        ...u,
-        department: u.departmentId || inviteForm.department,
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        department: u.departmentId || "Unassigned",
+        avatar: "",
+        isActive: true,
+        status: "active",
         tasksCompleted: 0,
         tasksTotal: 0,
         lastActive: "Just now",
@@ -213,6 +219,38 @@ export default function Team() {
       }])
       setShowInviteModal(false)
       setInviteForm({ name: "", email: "", role: "member", department: "Technology" })
+      window.dispatchEvent(new Event('users-updated'))
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  const handleAddImmediateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const u = await api.post<any>("/users", {
+        name: immediateForm.name,
+        email: immediateForm.email,
+        role: immediateForm.role,
+        departmentId: immediateForm.department,
+        password: immediateForm.password
+      })
+      setTeamUsers(prev => [...prev, {
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        department: u.departmentId || "Unassigned",
+        avatar: "",
+        isActive: true,
+        status: "active",
+        tasksCompleted: 0,
+        tasksTotal: 0,
+        lastActive: "Just now",
+        team: u.teamId || ""
+      }])
+      setShowAddImmediateModal(false)
+      setImmediateForm({ name: "", email: "", role: "member", department: "Technology", password: "" })
       window.dispatchEvent(new Event('users-updated'))
     } catch(e) {
       console.error(e)
@@ -227,9 +265,16 @@ export default function Team() {
           <h2 className="text-xl font-bold text-white" style={{ fontFamily: "DM Sans, sans-serif" }}>Team</h2>
           <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>{teamUsers.filter((u) => u.isActive).length} active · {teamUsers.length} total members</p>
         </div>
-        <button onClick={() => setShowInviteModal(true)} className="btn btn-primary flex items-center gap-1.5">
-          <Plus size={14} /> Invite Member
-        </button>
+        <div className="flex gap-2">
+          {user?.role === "super_admin" && (
+            <button onClick={() => setShowAddImmediateModal(true)} className="btn btn-secondary flex items-center gap-1.5">
+              <Plus size={14} /> Add Immediately
+            </button>
+          )}
+          <button onClick={() => setShowInviteModal(true)} className="btn btn-primary flex items-center gap-1.5">
+            <Plus size={14} /> Invite Member
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -449,6 +494,120 @@ export default function Team() {
                     className="btn btn-primary text-xs px-4 py-2 rounded-lg"
                   >
                     Send Invitation
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </>
+        )}
+
+        {/* Add Immediately Modal */}
+        {showAddImmediateModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAddImmediateModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-6 z-50 shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold text-white">Add Member Immediately</h3>
+                <button onClick={() => setShowAddImmediateModal(false)} className="text-gray-400 hover:text-white transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddImmediateSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    placeholder="e.g. John Doe"
+                    value={immediateForm.name}
+                    onChange={(e) => setImmediateForm({ ...immediateForm, name: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    placeholder="john@example.com"
+                    value={immediateForm.email}
+                    onChange={(e) => setImmediateForm({ ...immediateForm, email: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1">Password</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    placeholder="Set a password for the user"
+                    value={immediateForm.password}
+                    onChange={(e) => setImmediateForm({ ...immediateForm, password: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Role</label>
+                    <select
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                      value={immediateForm.role}
+                      onChange={(e) => setImmediateForm({ ...immediateForm, role: e.target.value as Role })}
+                    >
+                      {Object.entries(roleLabels).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Department</label>
+                    <select
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                      value={immediateForm.department}
+                      onChange={(e) => setImmediateForm({ ...immediateForm, department: e.target.value })}
+                    >
+                      {departments.length > 0 ? (
+                        departments.map((d) => <option key={d} value={d}>{d}</option>)
+                      ) : (
+                        <>
+                          <option value="Technology">Technology</option>
+                          <option value="Creative">Creative</option>
+                          <option value="Performance Marketing">Performance Marketing</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddImmediateModal(false)}
+                    className="px-4 py-2 rounded-lg text-xs font-medium text-gray-400 hover:bg-gray-800 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-secondary text-xs px-4 py-2 rounded-lg"
+                  >
+                    Add User Immediately
                   </button>
                 </div>
               </form>
