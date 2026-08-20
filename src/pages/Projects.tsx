@@ -1,5 +1,7 @@
 import { useState } from "react"
+
 import { motion, AnimatePresence } from "framer-motion"
+
 import {
   Plus,
   Search,
@@ -14,25 +16,42 @@ import {
   X,
   Trash2,
 } from "lucide-react"
+
 import { api } from "../api/client"
+
 import { useEffect } from "react"
+
 import ConfirmModal from "../components/common/ConfirmModal"
 
 export interface Project {
   id: string
+
   name: string
+
   description: string
+
   status: "active" | "on_hold" | "completed" | "cancelled"
+
   progress: number
+
   budget: number
+
   spent: number
+
   managerId: string
+
   clientId?: string
+
   category: string
+
   color: string
+
   team: string[]
+
   tasks: number
+
   completedTasks: number
+
   endDate?: string
 }
 
@@ -40,25 +59,35 @@ let globalUsers: any[] = []
 
 const statusLabels: Record<string, string> = {
   active: "Active",
+
   on_hold: "On Hold",
+
   completed: "Completed",
+
   cancelled: "Cancelled",
 }
+
 const statusColors: Record<string, string> = {
   active: "#22c55e",
+
   on_hold: "#f59e0b",
+
   completed: "#6366f1",
+
   cancelled: "#6b7280",
 }
 
 function ProjectCard({
   project,
+
   onDelete,
 }: {
   project: Project
+
   onDelete: (project: Project) => void
 }) {
   const manager = globalUsers.find((u) => u.id === project.managerId)
+
   const budgetPct = Math.round((project.spent / project.budget) * 100)
 
   return (
@@ -81,6 +110,7 @@ function ProjectCard({
             className="w-9 h-9 rounded-xl flex-shrink-0"
             style={{
               background: `${project.color}20`,
+
               border: `1px solid ${project.color}30`,
             }}
           >
@@ -114,6 +144,7 @@ function ProjectCard({
               style={{ color: "#4b5563" }}
               onClick={(e) => {
                 e.stopPropagation()
+
                 onDelete(project)
               }}
               title="Delete project"
@@ -199,6 +230,7 @@ function ProjectCard({
             className="h-full rounded-full transition-all"
             style={{
               width: `${Math.min(budgetPct, 100)}%`,
+
               background: budgetPct > 85 ? "#ef4444" : "#22c55e",
             }}
           />
@@ -223,6 +255,7 @@ function ProjectCard({
           {project.endDate
             ? new Date(project.endDate).toLocaleDateString("en-US", {
                 month: "short",
+
                 day: "numeric",
               })
             : "No due date"}
@@ -234,44 +267,66 @@ function ProjectCard({
 
 export default function Projects() {
   const [search, setSearch] = useState("")
+
   const [filterStatus, setFilterStatus] = useState("all")
+
   const [view, setView] = useState<"grid" | "list">("grid")
+
   const [localProjects, setLocalProjects] = useState<Project[]>([])
+
   const [showModal, setShowModal] = useState(false)
+
   const [formData, setFormData] = useState({
     name: "",
+
     description: "",
+
     budget: "",
+
     createdBy: "",
+
     manager: "",
   })
 
   useEffect(() => {
     // 1. Fetch initial chunk fast (e.g. limit=15)
+
     Promise.all([
-      api.get<{items: any[]}>("/users").then(r => r.items),
-      api.get<{items: Project[]}>("/projects?limit=15").then(r => r.items)
+      api.get<{ items: any[] }>("/users").then((r) => r.items),
+
+      api.get<{ items: Project[] }>("/projects?limit=15").then((r) => r.items),
     ])
+
       .then(([uData, pData]) => {
         globalUsers = uData
+
         setLocalProjects(pData)
 
         // 2. Fetch the rest in the background
-        api.get<{items: Project[]}>("/projects?skip=15&limit=1000").then(r => {
-          if (r.items && r.items.length > 0) {
-            setLocalProjects(prev => {
-              const existingIds = new Set(prev.map(p => p.id))
-              const newProjects = r.items.filter(p => !existingIds.has(p.id))
-              return [...prev, ...newProjects]
-            })
-          }
-        }).catch(console.error)
 
+        api
+          .get<{ items: Project[] }>("/projects?skip=15&limit=1000")
+          .then((r) => {
+            if (r.items && r.items.length > 0) {
+              setLocalProjects((prev) => {
+                const existingIds = new Set(prev.map((p) => p.id))
+
+                const newProjects = r.items.filter(
+                  (p) => !existingIds.has(p.id),
+                )
+
+                return [...prev, ...newProjects]
+              })
+            }
+          })
+          .catch(console.error)
       })
+
       .catch(console.error)
   }, [])
 
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
+
   const [isCreating, setIsCreating] = useState(false)
 
   const handleDeleteProject = (project: Project) => {
@@ -280,9 +335,14 @@ export default function Projects() {
 
   const confirmDeleteProject = async () => {
     if (!projectToDelete) return
+
     try {
       await api.delete(`/projects/${projectToDelete.id}`)
-      setLocalProjects((prev) => prev.filter((project) => project.id !== projectToDelete.id))
+
+      setLocalProjects((prev) =>
+        prev.filter((project) => project.id !== projectToDelete.id),
+      )
+
       setProjectToDelete(null)
     } catch (error) {
       console.error("Failed to delete project", error)
@@ -292,11 +352,14 @@ export default function Projects() {
   const filtered = localProjects.filter((p) => {
     if (search && !p.name.toLowerCase().includes(search.toLowerCase()))
       return false
+
     if (filterStatus !== "all" && p.status !== filterStatus) return false
+
     return true
   })
 
   const totalBudget = localProjects.reduce((acc, p) => acc + p.budget, 0)
+
   const totalSpent = localProjects.reduce((acc, p) => acc + p.spent, 0)
 
   return (
@@ -325,26 +388,41 @@ export default function Projects() {
         {[
           {
             label: "Total Projects",
+
             value: localProjects.length,
+
             icon: TrendingUp,
+
             color: "#6366f1",
           },
+
           {
             label: "Active",
+
             value: localProjects.filter((p) => p.status === "active").length,
+
             icon: CheckSquare,
+
             color: "#22c55e",
           },
+
           {
             label: "Total Budget",
+
             value: `$${(totalBudget / 1000).toFixed(0)}k`,
+
             icon: DollarSign,
+
             color: "#f59e0b",
           },
+
           {
             label: "Spent",
+
             value: `$${(totalSpent / 1000).toFixed(0)}k`,
+
             icon: ArrowUpRight,
+
             color: "#8b5cf6",
           },
         ].map((stat, i) => (
@@ -443,6 +521,7 @@ export default function Projects() {
               className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-md z-50 rounded-2xl shadow-2xl p-6"
               style={{
                 background: "#13141a",
+
                 border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
@@ -537,21 +616,34 @@ export default function Projects() {
                   onClick={async () => {
                     try {
                       setIsCreating(true)
+
                       const payload = {
                         name: formData.name || "Unnamed Project",
+
                         description: formData.description || "",
+
                         budget: Number(formData.budget) || 10000,
+
                         manager_id: formData.manager || undefined,
+
                         team: formData.manager ? [formData.manager] : [],
                       }
+
                       const newProj = await api.post<any>("/projects", payload)
+
                       setLocalProjects([newProj, ...localProjects])
+
                       setShowModal(false)
+
                       setFormData({
                         name: "",
+
                         description: "",
+
                         budget: "",
+
                         createdBy: "",
+
                         manager: "",
                       })
                     } catch (e) {
@@ -561,7 +653,7 @@ export default function Projects() {
                     }
                   }}
                 >
-                  {isCreating ? 'Creating...' : 'Create Project'}
+                  {isCreating ? "Creating..." : "Create Project"}
                 </button>
               </div>
             </motion.div>

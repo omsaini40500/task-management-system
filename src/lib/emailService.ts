@@ -2,31 +2,48 @@ import { api } from "../api/client"
 
 export interface TaskDailySummary {
   date: string
+
   totalTasks: number
+
   completedTasks: number
+
   pendingTasks: number
+
   inProgressTasks: number
+
   blockedTasks: number
+
   tasks: Array<{
     id: string
+
     title: string
+
     status: string
+
     assignedTo: string[]
+
     priority: string
+
     dueDate: string
   }>
 }
 
 export interface EmailPayload {
   to: string
+
   subject: string
+
   html: string
+
   text: string
 }
 
-const EMAIL_SENT_STORAGE_KEY = 'flash_daily_email_logs'
+const EMAIL_SENT_STORAGE_KEY = "flash_daily_email_logs"
 
-export async function sendDailyTaskSummaryEmail(summary: TaskDailySummary, superAdminEmail: string): Promise<boolean> {
+export async function sendDailyTaskSummaryEmail(
+  summary: TaskDailySummary,
+  superAdminEmail: string,
+): Promise<boolean> {
   const subject = `Daily Task Summary - ${summary.date}`
 
   const html = `
@@ -83,23 +100,39 @@ export async function sendDailyTaskSummaryEmail(summary: TaskDailySummary, super
           </div>
         </div>
 
-        ${summary.tasks.length > 0 ? `
+        ${
+          summary.tasks.length > 0
+            ? `
           <div class="section">
             <div class="section-title">Task Details</div>
-            ${summary.tasks.map(task => {
-              const statusColor = task.status === 'done' ? '#10b981' : task.status === 'in_progress' ? '#6366f1' : task.status === 'blocked' ? '#ef4444' : '#f59e0b'
-              return `
+            ${summary.tasks
+              .map((task) => {
+                const statusColor =
+                  task.status === "done"
+                    ? "#10b981"
+                    : task.status === "in_progress"
+                      ? "#6366f1"
+                      : task.status === "blocked"
+                        ? "#ef4444"
+                        : "#f59e0b"
+
+                return `
                 <div class="task-item">
                   <div class="task-status" style="background: ${statusColor}"></div>
                   <div class="task-info">
                     <div class="task-title">${task.title}</div>
-                    <div class="task-meta">${task.status.replace('_', ' ')} • ${task.assignedTo.length > 0 ? 'Assigned' : 'Unassigned'}</div>
+                    <div class="task-meta">${task.status.replace("_", " ")} • ${
+                      task.assignedTo.length > 0 ? "Assigned" : "Unassigned"
+                    }</div>
                   </div>
                 </div>
               `
-            }).join('')}
+              })
+              .join("")}
           </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <div class="footer">
           Flash Communications Task Management System<br>
@@ -119,7 +152,7 @@ Pending: ${summary.pendingTasks + summary.inProgressTasks}
 Blocked: ${summary.blockedTasks}
 
 Task Details:
-${summary.tasks.map(task => `- ${task.title} [${task.status.replace('_', ' ')}]`).join('\n')}
+${summary.tasks.map((task) => `- ${task.title} [${task.status.replace("_", " ")}]`).join("\n")}
 
 ---
 Flash Communications Task Management System
@@ -128,39 +161,66 @@ This is an automated daily summary email.
 
   const payload: EmailPayload = {
     to: superAdminEmail,
+
     subject,
+
     html,
+
     text,
   }
 
   try {
-    await api.post<{ success: boolean; message: string }>('/emails/daily-summary', payload)
+    await api.post<{ success: boolean message: string }>(
+      "/emails/daily-summary",
+      payload,
+    )
+
     logEmailSent(summary.date, true, payload)
+
     return true
   } catch (error) {
-    console.error('Failed to send daily email via API:', error)
+    console.error("Failed to send daily email via API:", error)
+
     logEmailSent(summary.date, false, payload)
+
     return false
   }
 }
 
-export function getEmailLogs(): Array<{ date: string; sent: boolean; timestamp: string; payload?: { to: string; subject: string } }> {
+export function getEmailLogs(): Array<{
+  date: string
+  sent: boolean
+  timestamp: string
+  payload?: { to: string subject: string }
+}> {
   try {
     const stored = localStorage.getItem(EMAIL_SENT_STORAGE_KEY)
+
     if (stored) return JSON.parse(stored)
   } catch {}
+
   return []
 }
 
 function logEmailSent(date: string, sent: boolean, payload?: EmailPayload) {
   try {
     const logs = getEmailLogs()
+
     logs.push({
       date,
+
       sent,
+
       timestamp: new Date().toISOString(),
-      payload: payload ? { to: payload.to, subject: payload.subject } : undefined,
+
+      payload: payload
+        ? { to: payload.to, subject: payload.subject }
+        : undefined,
     })
-    localStorage.setItem(EMAIL_SENT_STORAGE_KEY, JSON.stringify(logs.slice(-30)))
+
+    localStorage.setItem(
+      EMAIL_SENT_STORAGE_KEY,
+      JSON.stringify(logs.slice(-30)),
+    )
   } catch {}
 }
