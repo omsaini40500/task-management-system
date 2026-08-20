@@ -157,24 +157,49 @@ export default function Dashboard() {
   useEffect(() => {
     const load = async () => {
       try {
+        // 1. Fetch initial chunk fast (limit=25) so the dashboard shows instantly
         const [allTasks, mine, allProjects, allUsers, summary, expensesData, expSummary] = await Promise.all([
-          api.get<{items: Task[]}>("/tasks").then(r => Array.isArray(r?.items) ? r.items : []),
-          api.get<{items: Task[]}>("/tasks/my").then(r => Array.isArray(r?.items) ? r.items : []),
-          api.get<{items: Project[]}>("/projects").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<{items: Task[]}>("/tasks?limit=25").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<{items: Task[]}>("/tasks/my?limit=25").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<{items: Project[]}>("/projects?limit=25").then(r => Array.isArray(r?.items) ? r.items : []),
           api.get<{items: any[]}>("/users").then(r => Array.isArray(r?.items) ? r.items : []),
           api.get<any>("/reports/summary").catch(() => null),
-          api.get<any[]>("/expenses").catch(() => []),
+          api.get<any[]>("/expenses?limit=25").catch(() => []),
           api.get<{total_spent: number; count: number}>("/expenses/summary").catch(() => null),
         ])
-        setTasks(Array.isArray(allTasks) ? allTasks : [])
-        setMyTasks(Array.isArray(mine) ? mine : [])
-        setProjects(Array.isArray(allProjects) ? allProjects : [])
+        setTasks(allTasks)
+        setMyTasks(mine)
+        setProjects(allProjects)
         setTeamMemberCount(Array.isArray(allUsers) ? allUsers.filter((u: any) => u.isActive).length : 0)
         if (summary) setReports(summary)
         setExpenses(Array.isArray(expensesData) ? expensesData : [])
+        
+        // Remove loading state immediately so UI appears
+        setLoading(false)
+
+        // 2. Fetch the rest in the background silently
+        Promise.all([
+          api.get<{items: Task[]}>("/tasks?skip=25&limit=1000").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<{items: Task[]}>("/tasks/my?skip=25&limit=1000").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<{items: Project[]}>("/projects?skip=25&limit=1000").then(r => Array.isArray(r?.items) ? r.items : []),
+          api.get<any[]>("/expenses?skip=25&limit=1000").catch(() => []),
+        ]).then(([moreTasks, moreMine, moreProjects, moreExpenses]) => {
+           if (moreTasks.length) setTasks(prev => {
+             const exist = new Set(prev.map(t => t.id)); return [...prev, ...moreTasks.filter(t => !exist.has(t.id))]
+           })
+           if (moreMine.length) setMyTasks(prev => {
+             const exist = new Set(prev.map(t => t.id)); return [...prev, ...moreMine.filter(t => !exist.has(t.id))]
+           })
+           if (moreProjects.length) setProjects(prev => {
+             const exist = new Set(prev.map(t => t.id)); return [...prev, ...moreProjects.filter(t => !exist.has(t.id))]
+           })
+           if (moreExpenses.length) setExpenses(prev => {
+             const exist = new Set(prev.map(t => t.id)); return [...prev, ...moreExpenses.filter(t => !exist.has(t.id))]
+           })
+        }).catch(console.error)
+
       } catch (e) {
         console.error("Dashboard load error", e)
-      } finally {
         setLoading(false)
       }
     }

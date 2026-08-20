@@ -247,10 +247,26 @@ export default function Projects() {
   })
 
   useEffect(() => {
-    Promise.all([api.get<{items: any[]}>("/users").then(r => r.items), api.get<{items: Project[]}>("/projects").then(r => r.items)])
+    // 1. Fetch initial chunk fast (e.g. limit=15)
+    Promise.all([
+      api.get<{items: any[]}>("/users").then(r => r.items),
+      api.get<{items: Project[]}>("/projects?limit=15").then(r => r.items)
+    ])
       .then(([uData, pData]) => {
         globalUsers = uData
         setLocalProjects(pData)
+
+        // 2. Fetch the rest in the background
+        api.get<{items: Project[]}>("/projects?skip=15&limit=1000").then(r => {
+          if (r.items && r.items.length > 0) {
+            setLocalProjects(prev => {
+              const existingIds = new Set(prev.map(p => p.id))
+              const newProjects = r.items.filter(p => !existingIds.has(p.id))
+              return [...prev, ...newProjects]
+            })
+          }
+        }).catch(console.error)
+
       })
       .catch(console.error)
   }, [])

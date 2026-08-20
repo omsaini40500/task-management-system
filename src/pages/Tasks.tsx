@@ -320,12 +320,25 @@ export default function Tasks() {
   }
 
   useEffect(() => {
+    // 1. Fetch users and a small chunk of tasks first so the screen loads instantly
     Promise.all([
       api.get<{items: any[]}>("/users").then(r => r.items),
-      api.get<{items: Task[]}>("/tasks").then(r => r.items)
-    ]).then(([usersData, tasksData]) => {
+      api.get<{items: Task[]}>("/tasks?limit=15").then(r => r.items)
+    ]).then(([usersData, initialTasks]) => {
       globalUsers = usersData
-      setTasks(tasksData as ExtendedTask[])
+      setTasks(initialTasks as ExtendedTask[])
+
+      // 2. Silently fetch the rest of the tasks in the background
+      api.get<{items: Task[]}>("/tasks?skip=15&limit=1000").then(r => {
+        if (r.items && r.items.length > 0) {
+          setTasks(prev => {
+            const existingIds = new Set(prev.map(t => t.id))
+            const newTasks = r.items.filter(t => !existingIds.has(t.id))
+            return [...prev, ...newTasks] as ExtendedTask[]
+          })
+        }
+      }).catch(console.error)
+
     }).catch(console.error)
   }, [])
   const [search, setSearch] = useState("")
