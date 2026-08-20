@@ -264,7 +264,7 @@ export default function Team() {
           <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>{teamUsers.filter((u) => u.isActive).length} active · {teamUsers.length} total members</p>
         </div>
         <div className="flex gap-2">
-          {user?.role === "super_admin" && (
+          {currentUser?.role === "super_admin" && (
             <button onClick={() => setShowAddImmediateModal(true)} className="btn btn-secondary flex items-center gap-1.5">
               <Plus size={14} /> Add Immediately
             </button>
