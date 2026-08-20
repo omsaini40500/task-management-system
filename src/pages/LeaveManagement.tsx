@@ -42,10 +42,29 @@ export default function LeaveManagement() {
   })
 
   const isSuperAdmin = user?.role === 'super_admin'
+  const isAdmin = user?.role === 'admin'
+  const [isHR, setIsHR] = useState(false)
+
+  const canManageLeaves = isSuperAdmin || isAdmin || isHR
 
   useEffect(() => {
     loadLeaveRequests()
-  }, [])
+    checkUserDepartment()
+  }, [user])
+
+  const checkUserDepartment = async () => {
+    if (!user?.departmentId) return
+    try {
+      const { getDepartments } = await import('../api/org')
+      const depts = await getDepartments()
+      const userDept = depts.find((d: any) => d.id === user.departmentId)
+      if (userDept && (userDept.name.toLowerCase().includes('hr') || userDept.name.toLowerCase().includes('human resource'))) {
+        setIsHR(true)
+      }
+    } catch (e) {
+      console.error('Failed to load departments', e)
+    }
+  }
 
   const loadLeaveRequests = async () => {
     setLoading(true)
@@ -141,16 +160,17 @@ export default function LeaveManagement() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
   }
 
-  const visibleRequests = isSuperAdmin
-    ? leaveRequests.filter(req => filterStatus === 'all' || req.status === filterStatus)
-    : leaveRequests.filter(req => {
-        if (req.userId !== (user?.id || 'current')) return false
-        return filterStatus === 'all' || req.status === filterStatus
-      })
+  const userBaseRequests = canManageLeaves
+    ? leaveRequests
+    : leaveRequests.filter(req => req.userId === (user?.id || 'current'))
 
-  const pendingCount = leaveRequests.filter(req => req.status === 'pending').length
-  const approvedCount = leaveRequests.filter(req => req.status === 'approved').length
-  const rejectedCount = leaveRequests.filter(req => req.status === 'rejected').length
+  const visibleRequests = filterStatus === 'all'
+    ? userBaseRequests
+    : userBaseRequests.filter(req => req.status === filterStatus)
+
+  const pendingCount = userBaseRequests.filter(req => req.status === 'pending').length
+  const approvedCount = userBaseRequests.filter(req => req.status === 'approved').length
+  const rejectedCount = userBaseRequests.filter(req => req.status === 'rejected').length
 
   return (
     <div className="page">
@@ -169,7 +189,7 @@ export default function LeaveManagement() {
       <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="rounded-xl p-4 border" style={{ backgroundColor: '#1c2340', borderColor: '#252d4a' }}>
           <p className="text-xs mb-1" style={{ color: '#64748b' }}>Total Requests</p>
-          <p className="text-2xl font-bold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{leaveRequests.length}</p>
+          <p className="text-2xl font-bold text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>{userBaseRequests.length}</p>
         </div>
         <div className="rounded-xl p-4 border" style={{ backgroundColor: '#1c2340', borderColor: '#252d4a' }}>
           <p className="text-xs mb-1" style={{ color: '#64748b' }}>Pending</p>
@@ -287,7 +307,7 @@ export default function LeaveManagement() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {isSuperAdmin && req.status === 'pending' && req.userId !== (user?.id || 'current') && (
+                    {canManageLeaves && req.status === 'pending' && req.userId !== (user?.id || 'current') && (
                       <>
                         <button onClick={() => handleApprove(req.id)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors" style={{ backgroundColor: 'rgba(16,185,129,0.15)', color: '#10b981' }}>
                           Approve
