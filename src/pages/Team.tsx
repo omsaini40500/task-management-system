@@ -195,8 +195,6 @@ export default function Team() {
     if (!inviteForm.name || !inviteForm.email) return
 
     try {
-      const payload = {
-    try {
       const u = await api.post<any>("/users", {
         name: inviteForm.name,
         email: inviteForm.email,
