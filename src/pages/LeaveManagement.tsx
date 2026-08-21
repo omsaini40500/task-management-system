@@ -592,8 +592,7 @@ export default function LeaveManagement() {
 
                   <div className="flex items-center gap-2">
                     {canManageLeaves &&
-                      req.status === "pending" &&
-                      req.userId !== (user?.id || "current") && (
+                      req.status === "pending" && (
                         <>
                           <button
                             onClick={() => handleApprove(req.id)}
