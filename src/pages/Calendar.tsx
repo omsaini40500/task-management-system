@@ -35,9 +35,9 @@ const MONTHS = [
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export default function Calendar() {
-  const [year, setYear] = useState(2025)
+  const [year, setYear] = useState(() => new Date().getFullYear())
 
-  const [month, setMonth] = useState(10) // November
+  const [month, setMonth] = useState(() => new Date().getMonth())
 
   const [tasksList, setTasksList] = useState<Task[]>([])
 
@@ -188,7 +188,7 @@ export default function Calendar() {
               )
             })
 
-            const isToday = day === 8 && month === 10 && year === 2025
+            const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()
 
             return (
               <motion.div
