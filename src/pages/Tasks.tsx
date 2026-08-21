@@ -27,39 +27,37 @@ import { useDailyEmailScheduler } from "../hooks/useDailyEmailScheduler"
 
 import ConfirmModal from "../components/common/ConfirmModal"
 
-export type TaskStatus = "todo" | "in_progress" | "review" | "done" | "blocked"
+export type TaskStatus = "todo" | "in_progress" | "pending" | "review" | "done" | "blocked"
 
 export type Priority = "critical" | "high" | "medium" | "low"
 
 export interface Task {
   id: string
-
   title: string
-
   description: string
-
-  status: TaskStatus
-
   priority: Priority
-
-  dueDate: string
-
+  status: TaskStatus
   tags: string[]
-
   assignedTo: string[]
-
-  project?: string
-
+  dueDate?: string
   comments: number
-
   attachments: number
   estimatedDays: number
   spentHours: number
-
   progress: number
-
-  checklist: Array<{ id: string text: string done: boolean }>
+  assignedBy: string
+  createdAt: string
+  projectId?: string
 }
+
+export const STATUSES: { key: TaskStatus; label: string; color: string }[] = [
+  { key: "todo", label: "To Do", color: "#94a3b8" },
+  { key: "in_progress", label: "In Progress", color: "#3b82f6" },
+  { key: "pending", label: "Pending", color: "#f59e0b" },
+  { key: "review", label: "In Review", color: "#a855f7" },
+  { key: "done", label: "Done", color: "#22c55e" },
+  { key: "blocked", label: "Blocked", color: "#ef4444" },
+]
 
 let globalUsers: any[] = []
 
@@ -70,18 +68,6 @@ type View = "kanban" | "list" | "calendar"
 interface ExtendedTask extends Task {
   pendingReason?: string
 }
-
-const statusCols: { key: TaskStatus label: string color: string }[] = [
-  { key: "todo", label: "To Do", color: "#94a3b8" },
-
-  { key: "in_progress", label: "In Progress / Pending", color: "#6366f1" },
-
-  { key: "review", label: "In Review", color: "#f59e0b" },
-
-  { key: "done", label: "Done", color: "#22c55e" },
-
-  { key: "blocked", label: "Blocked", color: "#ef4444" },
-]
 
 const priorityColors: Record<Priority, string> = {
   critical: "#ef4444",
@@ -839,7 +825,7 @@ export default function Tasks() {
           onChange={(e) => setFilterStatus(e.target.value as any)}
         >
           <option value="all">All Status</option>
-          {statusCols.map((s) => (
+          {STATUSES.map((s) => (
             <option key={s.key} value={s.key}>
               {s.label}
             </option>
@@ -865,7 +851,7 @@ export default function Tasks() {
       {/* Kanban view */}
       {view === "kanban" && (
         <div className="flex gap-4 overflow-x-auto pb-4">
-          {statusCols.map((col) => {
+          {STATUSES.map((col) => {
             const colTasks = filtered.filter((t) => t.status === col.key)
 
             return (
