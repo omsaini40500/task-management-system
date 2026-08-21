@@ -271,6 +271,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function Dashboard() {
   const { user } = useAuth()
 
+  const currentHour = new Date().getHours()
+  const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening"
+
   const [tasks, setTasks] = useState<Task[]>([])
 
   const [myTasks, setMyTasks] = useState<Task[]>([])
@@ -512,7 +515,7 @@ export default function Dashboard() {
             className="text-xl font-bold text-white mb-0.5"
             style={{ fontFamily: "DM Sans, sans-serif" }}
           >
-            Good morning, {user?.name?.split(" ")[0]} 👋
+            {greeting}, {user?.name?.split(" ")[0]} 👋
           </h2>
           <p className="text-sm" style={{ color: "#6b7280" }}>
             {new Date().toLocaleDateString("en-US", {
