@@ -232,7 +232,7 @@ export default function Finance() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="card p-5 relative overflow-hidden">
           <div
-            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
+            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 pointer-events-none"
             style={{
               background:
                 "radial-gradient(circle, #10b981 0%, transparent 70%)",
@@ -281,7 +281,7 @@ export default function Finance() {
         </div>
         <div className="card p-5 relative overflow-hidden">
           <div
-            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
+            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 pointer-events-none"
             style={{
               background:
                 "radial-gradient(circle, #ef4444 0%, transparent 70%)",
@@ -303,7 +303,7 @@ export default function Finance() {
         </div>
         <div className="card p-5 relative overflow-hidden">
           <div
-            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
+            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 pointer-events-none"
             style={{
               background:
                 "radial-gradient(circle, #6366f1 0%, transparent 70%)",
@@ -325,7 +325,7 @@ export default function Finance() {
         </div>
         <div className="card p-5 relative overflow-hidden">
           <div
-            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
+            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 pointer-events-none"
             style={{
               background:
                 "radial-gradient(circle, #10b981 0%, transparent 70%)",
