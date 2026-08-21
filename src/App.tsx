@@ -285,9 +285,9 @@ function AppRoutes() {
         <Route
           path="finance"
           element={
-            <SuperAdminRouteGuard>
+            <ClientRouteGuard>
               <Finance />
-            </SuperAdminRouteGuard>
+            </ClientRouteGuard>
           }
         />
         <Route
