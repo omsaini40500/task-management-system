@@ -155,7 +155,12 @@ export default function Sidebar({
 
   const isClient = user?.role === "client"
 
-  const visibleNavItems = isClient ? clientNavItems : navItems
+  const visibleNavItems = isClient ? clientNavItems : navItems.filter(item => {
+    if (item.label === "Finance") {
+      return user?.role === "super_admin" || (user?.department && user.department.toLowerCase().includes("finance"))
+    }
+    return true
+  })
 
   useEffect(() => {
     let cancelled = false

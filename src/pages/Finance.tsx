@@ -48,27 +48,32 @@ export default function Finance() {
 
   const [loading, setLoading] = useState(true)
 
+  const [companyBudget, setCompanyBudget] = useState(0)
+  const [editingBudget, setEditingBudget] = useState(false)
+  const [budgetInput, setBudgetInput] = useState("")
+
   const [formData, setFormData] = useState({
     amount: "",
-
     category: "",
-
     description: "",
-
     date: new Date().toISOString().split("T")[0],
   })
 
   const [itemToDelete, setItemToDelete] = useState<string | null>(null)
 
-  const isSuperAdmin = user?.role === "super_admin"
+  const isFinance = user?.role === "super_admin" || (user?.department && user.department.toLowerCase().includes("finance"))
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (isFinance) {
+      loadData()
+    } else {
+      setLoading(false)
+    }
+  }, [isFinance])
 
   const loadData = async () => {
     try {
-      const [expensesData, summaryData] = await Promise.all([
+      const [expensesData, summaryData, budgetData] = await Promise.all([
         api.get<Expense[]>("/expenses").catch((e) => {
           console.error("Failed to load expenses", e)
           return []
@@ -84,11 +89,17 @@ export default function Finance() {
             console.error("Failed to load expense summary", e)
             return null
           }),
+          
+        api.get<{ budget: number }>("/expenses/budget").catch(() => ({ budget: 0 })),
       ])
 
       setExpenses(expensesData)
 
       setSummary(summaryData)
+      
+      if (budgetData) {
+        setCompanyBudget(budgetData.budget)
+      }
     } catch (e) {
       console.error("Finance load error", e)
 
@@ -149,6 +160,19 @@ export default function Finance() {
     }
   }
 
+  const saveBudget = async () => {
+    try {
+      const b = parseFloat(budgetInput)
+      if (isNaN(b)) return
+      await api.post("/expenses/budget", { amount: b })
+      setCompanyBudget(b)
+      setEditingBudget(false)
+    } catch (e) {
+      console.error("Failed to save budget", e)
+      alert("Failed to save budget")
+    }
+  }
+
   const totalSpent =
     summary?.total_spent ?? expenses.reduce((sum, e) => sum + e.amount, 0)
 
@@ -166,7 +190,7 @@ export default function Finance() {
     )
   }
 
-  if (!isSuperAdmin) {
+  if (!isFinance) {
     return (
       <div className="page">
         <div className="text-center py-16">
@@ -175,7 +199,7 @@ export default function Finance() {
             Access Denied
           </h3>
           <p className="text-sm" style={{ color: "#6b7280" }}>
-            Only super admin can view this section
+            Only super admin and Finance department can view this section
           </p>
         </div>
       </div>
@@ -206,6 +230,55 @@ export default function Finance() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="card p-5 relative overflow-hidden">
+          <div
+            className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
+            style={{
+              background:
+                "radial-gradient(circle, #10b981 0%, transparent 70%)",
+              transform: "translate(30%, -30%)",
+            }}
+          />
+          <div className="flex items-center gap-2 mb-2">
+            <DollarSign size={16} style={{ color: "#10b981" }} />
+            <span className="text-xs" style={{ color: "#6b7280" }}>
+              Company Budget
+            </span>
+            <button
+              onClick={() => {
+                setBudgetInput(companyBudget.toString())
+                setEditingBudget(!editingBudget)
+              }}
+              className="ml-auto text-xs text-indigo-400 hover:text-indigo-300"
+            >
+              Edit
+            </button>
+          </div>
+          {editingBudget ? (
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                type="number"
+                value={budgetInput}
+                onChange={(e) => setBudgetInput(e.target.value)}
+                className="input text-sm py-1 px-2 w-24"
+                placeholder="Budget"
+              />
+              <button
+                onClick={saveBudget}
+                className="btn btn-primary py-1 px-3 text-xs"
+              >
+                Save
+              </button>
+            </div>
+          ) : (
+            <div
+              className="text-2xl font-bold text-white"
+              style={{ fontFamily: "DM Sans, sans-serif" }}
+            >
+              ₹{companyBudget.toLocaleString()}
+            </div>
+          )}
+        </div>
         <div className="card p-5 relative overflow-hidden">
           <div
             className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"

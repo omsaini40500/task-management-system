@@ -282,6 +282,7 @@ export default function Dashboard() {
   const [reports, setReports] = useState<any>(null)
 
   const [expenses, setExpenses] = useState<any[]>([])
+  const [companyBudget, setCompanyBudget] = useState(0)
 
   const [expenseSummary, setExpenseSummary] = useState<{
     total_spent: number
@@ -317,6 +318,7 @@ export default function Dashboard() {
           summary,
           expensesData,
           expSummary,
+          budgetData,
         ] = await Promise.all([
           api
             .get<{ items: Task[] }>("/tasks?limit=25")
@@ -341,6 +343,8 @@ export default function Dashboard() {
           api
             .get<{ total_spent: number count: number }>("/expenses/summary")
             .catch(() => null),
+            
+          api.get<{ budget: number }>("/expenses/budget").catch(() => ({ budget: 0 })),
         ])
 
         setTasks(allTasks)
@@ -348,6 +352,8 @@ export default function Dashboard() {
         setMyTasks(mine)
 
         setProjects(allProjects)
+        
+        if (budgetData?.budget) setCompanyBudget(budgetData.budget)
 
         setTeamMemberCount(
           Array.isArray(allUsers)
@@ -358,6 +364,7 @@ export default function Dashboard() {
         if (summary) setReports(summary)
 
         setExpenses(Array.isArray(expensesData) ? expensesData : [])
+        if (expSummary) setExpenseSummary(expSummary)
 
         // Remove loading state immediately so UI appears
 
@@ -648,15 +655,8 @@ export default function Dashboard() {
       {role === "super_admin" && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {(() => {
-            const totalBudget = projects.reduce(
-              (sum, p) => sum + (Number(p.budget) || 0),
-              0,
-            )
-
-            const totalSpent = projects.reduce(
-              (sum, p) => sum + (Number(p.spent) || 0),
-              0,
-            )
+            const totalBudget = companyBudget
+            const totalSpent = expenseSummary?.total_spent || expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0)
 
             const remaining = totalBudget - totalSpent
 
