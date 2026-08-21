@@ -10,6 +10,8 @@ import {
   deleteMeeting,
   updateMeeting,
 } from "../api/meetings"
+import { api } from "../api/client"
+import { formatDate } from "../utils/date"
 
 import ConfirmModal from "../components/common/ConfirmModal"
 
@@ -336,9 +338,9 @@ export default function MeetingManagement() {
                       {m.type}
                     </span>
                   </div>
-                  <p className="text-xs mt-1" style={{ color: "#64748b" }}>
-                    {m.date} · {m.time} · {m.duration}
-                  </p>
+                    <p className="text-sm mt-1" style={{ color: "#94a3b8" }}>
+                      {formatDate(m.date)} • {m.time} • {m.duration}
+                    </p>
                   {m.meetingLink && (
                     <a
                       href={m.meetingLink}

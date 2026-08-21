@@ -23,6 +23,9 @@ import {
   deleteLeave,
 } from "../api/leave"
 
+import { getLeaveRequests } from "../api/hr"
+import { formatDate } from "../utils/date"
+
 import ConfirmModal from "../components/common/ConfirmModal"
 
 interface LeaveRequest {
@@ -516,7 +519,7 @@ export default function LeaveManagement() {
                       className="text-sm text-white"
                       style={{ fontFamily: "JetBrains Mono, monospace" }}
                     >
-                      {req.startDate}
+                      {formatDate(req.startDate)}
                     </p>
                   </div>
                   <div>
@@ -527,7 +530,7 @@ export default function LeaveManagement() {
                       className="text-sm text-white"
                       style={{ fontFamily: "JetBrains Mono, monospace" }}
                     >
-                      {req.endDate}
+                      {formatDate(req.endDate)}
                     </p>
                   </div>
                   <div>

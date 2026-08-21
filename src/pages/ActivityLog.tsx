@@ -15,6 +15,7 @@ import {
 import { api } from "../api/client"
 
 import type { ActivityLog } from "../types"
+import { formatDateTime } from "../utils/date"
 
 const actionColors: Record<string, string> = {
   "Changed role": "#8b5cf6",
@@ -340,7 +341,7 @@ export default function ActivityLog() {
                           fontFamily: "JetBrains Mono, monospace",
                         }}
                       >
-                        {log.timestamp}
+                        {formatDateTime(log.timestamp)}
                       </td>
                     </motion.tr>
                   )
