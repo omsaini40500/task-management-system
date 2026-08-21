@@ -946,7 +946,7 @@ export default function Tasks() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.03 }}
                 onClick={() => setSelectedTask(task)}
-                className="grid items-center px-4 py-3 border-b table-row cursor-pointer"
+                className="grid items-center px-4 py-3 border-b cursor-pointer transition-colors hover:bg-white/5"
                 style={{
                   gridTemplateColumns: "1fr 120px 100px 100px 120px 80px",
                   borderColor: "rgba(255,255,255,0.04)",
