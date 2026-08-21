@@ -242,7 +242,7 @@ export default function Finance() {
           <div className="flex items-center gap-2 mb-2">
             <DollarSign size={16} style={{ color: "#10b981" }} />
             <span className="text-xs" style={{ color: "#6b7280" }}>
-              Company Budget
+              Monthly Company Budget
             </span>
             <button
               onClick={() => {

@@ -665,7 +665,7 @@ export default function Dashboard() {
 
             return [
               {
-                label: "Total Budget",
+                label: "Monthly Budget",
                 value: totalBudget,
                 prefix: "₹",
                 color: "#6366f1",
