@@ -488,7 +488,7 @@ export default function Reports() {
                       tickLine={false}
                     />
                     <YAxis
-                      tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
                       tick={{ fontSize: 11, fill: "#6b7280" }}
                       axisLine={false}
                       tickLine={false}
@@ -651,7 +651,7 @@ export default function Reports() {
                       tickLine={false}
                     />
                     <YAxis
-                      tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
                       tick={{ fontSize: 11, fill: "#6b7280" }}
                       axisLine={false}
                       tickLine={false}

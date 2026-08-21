@@ -212,7 +212,7 @@ function ProjectCard({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs" style={{ color: "#6b7280" }}>
-            Budget: ${(project.spent / 1000).toFixed(0)}k / $
+            Budget: ₹{(project.spent / 1000).toFixed(0)}k / ₹
             {(project.budget / 1000).toFixed(0)}k
           </span>
           <span
@@ -409,7 +409,7 @@ export default function Projects() {
           {
             label: "Total Budget",
 
-            value: `$${(totalBudget / 1000).toFixed(0)}k`,
+            value: `₹${(totalBudget / 1000).toFixed(0)}k`,
 
             icon: DollarSign,
 
@@ -419,7 +419,7 @@ export default function Projects() {
           {
             label: "Spent",
 
-            value: `$${(totalSpent / 1000).toFixed(0)}k`,
+            value: `₹${(totalSpent / 1000).toFixed(0)}k`,
 
             icon: ArrowUpRight,
 

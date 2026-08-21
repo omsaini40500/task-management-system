@@ -583,7 +583,7 @@ export default function Dashboard() {
                           (sum, e) => sum + (Number(e.amount) || 0),
                           0,
                         ),
-                      prefix: "$",
+                      prefix: "₹",
                       change: `${expenseSummary?.count ?? expenses.length} items`,
                       changeUp: false,
                       color: "#ef4444",
@@ -667,21 +667,21 @@ export default function Dashboard() {
               {
                 label: "Total Budget",
                 value: totalBudget,
-                prefix: "$",
+                prefix: "₹",
                 color: "#6366f1",
               },
 
               {
                 label: "Total Spent",
                 value: totalSpent,
-                prefix: "$",
+                prefix: "₹",
                 color: "#f59e0b",
               },
 
               {
                 label: "Remaining",
                 value: remaining,
-                prefix: "$",
+                prefix: "₹",
                 color: "#10b981",
               },
 
@@ -779,7 +779,7 @@ export default function Dashboard() {
                 tickLine={false}
               />
               <YAxis
-                tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
                 tick={{ fontSize: 10, fill: "#6b7280" }}
                 axisLine={false}
                 tickLine={false}
@@ -857,7 +857,7 @@ export default function Dashboard() {
                   tickLine={false}
                 />
                 <YAxis
-                  tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                  tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
                   tick={{ fontSize: 11, fill: "#6b7280" }}
                   axisLine={false}
                   tickLine={false}

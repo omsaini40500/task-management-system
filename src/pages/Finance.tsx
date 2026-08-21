@@ -225,7 +225,7 @@ export default function Finance() {
             className="text-2xl font-bold text-white"
             style={{ fontFamily: "DM Sans, sans-serif" }}
           >
-            ${totalSpent.toLocaleString()}
+            ₹{totalSpent.toLocaleString()}
           </div>
         </div>
         <div className="card p-5 relative overflow-hidden">
@@ -290,7 +290,7 @@ export default function Finance() {
             className="text-2xl font-bold text-white"
             style={{ fontFamily: "DM Sans, sans-serif" }}
           >
-            $
+            ₹
             {expenses.length > 0
               ? Math.round(totalSpent / expenses.length).toLocaleString()
               : 0}
@@ -347,7 +347,7 @@ export default function Finance() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-semibold text-white">
-                    ${expense.amount.toLocaleString()}
+                    ₹{expense.amount.toLocaleString()}
                   </span>
                   <button
                     onClick={() => setItemToDelete(expense.id)}
@@ -416,7 +416,7 @@ export default function Finance() {
                     className="block text-xs font-medium mb-2"
                     style={{ color: "#94a3b8" }}
                   >
-                    Amount ($)
+                    Amount (₹)
                   </label>
                   <input
                     type="number"
