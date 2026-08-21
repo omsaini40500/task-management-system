@@ -1207,10 +1207,11 @@ export default function Tasks() {
                       <option value="critical">Critical</option>
                     </select>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1">
-                        Est. Days
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">
+                      Est. Days
                       </label>
                       <input
                         type="number"
