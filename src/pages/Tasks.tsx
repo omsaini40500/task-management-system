@@ -277,6 +277,8 @@ function TaskDrawer({
     ((role === "team_leader" || role === "member") &&
       task.assignedTo.includes(user?.id || ""))
 
+  const canUpdateStatus = task.assignedTo.includes(user?.id || "")
+
   const handleStatusChange = (newStatus: TaskStatus) => {
     setCurrentStatus(newStatus)
 
@@ -364,7 +366,10 @@ function TaskDrawer({
             <select
               value={currentStatus}
               onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
-              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-indigo-500"
+              disabled={!canUpdateStatus}
+              className={`w-full bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-indigo-500 ${
+                !canUpdateStatus ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <option value="todo">To Do</option>
               <option value="in_progress">In Progress / Pending</option>
