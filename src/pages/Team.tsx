@@ -47,6 +47,8 @@ export interface User {
 
   tasksTotal: number
 
+  isBlocked?: boolean
+
   isActive: boolean
 }
 
@@ -112,10 +114,14 @@ function MemberCard({
   user,
   onDelete,
   canDelete,
+  onUnblock,
+  canUnblock,
 }: {
   user: User
   onDelete: (id: string) => void
   canDelete: boolean
+  onUnblock: (id: string) => void
+  canUnblock: boolean
 }) {
   const completion =
     user.tasksTotal > 0
@@ -127,7 +133,7 @@ function MemberCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2, boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
-      className="card p-5 relative"
+      className={`card p-5 relative ${user.isBlocked ? 'border border-red-500/30' : ''}`}
       transition={{ duration: 0.15 }}
     >
       <div className="flex items-start justify-between mb-4">
@@ -143,6 +149,11 @@ function MemberCard({
               {user.role === "super_admin" && (
                 <Shield size={11} style={{ color: "#6366f1" }} />
               )}
+              {user.isBlocked && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">
+                  BLOCKED
+                </span>
+              )}
             </div>
             <div className="text-xs mt-0.5" style={{ color: "#6b7280" }}>
               {user.department}
@@ -150,6 +161,15 @@ function MemberCard({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {canUnblock && user.isBlocked && (
+            <button
+              onClick={() => onUnblock(user.id)}
+              className="transition-smooth px-2 py-1 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+              title="Unblock Account"
+            >
+              UNBLOCK
+            </button>
+          )}
           {canDelete && (
             <button
               onClick={() => onDelete(user.id)}
@@ -361,6 +381,17 @@ export default function Team() {
       console.error(e)
     } finally {
       setItemToDelete(null)
+    }
+  }
+
+  const handleUnblockUser = async (id: string) => {
+    try {
+      await api.post(`/users/${id}/unblock`)
+      setTeamUsers((prev) =>
+        prev.map((u) => (u.id === id ? { ...u, isBlocked: false } : u))
+      )
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -607,6 +638,8 @@ export default function Team() {
                   user={user}
                   onDelete={handleDeleteUser}
                   canDelete={canDeleteUsers}
+                  onUnblock={handleUnblockUser}
+                  canUnblock={role === "super_admin"}
                 />
               </motion.div>
             ))}

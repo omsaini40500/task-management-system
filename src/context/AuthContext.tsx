@@ -122,13 +122,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         "https://backend-4f8z.onrender.com/api/v1"
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
-
         body: form,
-
         credentials: "include",
       })
 
-      if (!res.ok) return null
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}))
+        throw new Error(errorData.detail || "Invalid email or password.")
+      }
 
       const me = await api.get<{
         id: string

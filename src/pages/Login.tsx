@@ -47,12 +47,15 @@ export default function Login() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
     setLoginError(null)
-    const role = await login(data.email.trim().toLowerCase(), data.password)
-    setLoading(false)
-    if (role) {
-      navigate(homePathForRole(role))
-    } else {
-      setLoginError("Invalid email or password. Please try again.")
+    try {
+      const role = await login(data.email.trim().toLowerCase(), data.password)
+      if (role) {
+        navigate(homePathForRole(role))
+      }
+    } catch (e: any) {
+      setLoginError(e.message || "Invalid email or password. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
