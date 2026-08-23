@@ -574,7 +574,7 @@ export default function Team() {
           border: "1px solid rgba(255,255,255,0.07)",
         }}
       >
-        {(role === "super_admin"
+        {(currentUser?.role === "super_admin"
           ? ["members", "departments", "permissions", "blocked"]
           : ["members", "departments", "permissions"]
         ).map((tab) => (
@@ -642,7 +642,7 @@ export default function Team() {
                   onDelete={handleDeleteUser}
                   canDelete={canDeleteUsers}
                   onUnblock={handleUnblockUser}
-                  canUnblock={role === "super_admin"}
+                  canUnblock={currentUser?.role === "super_admin"}
                 />
               </motion.div>
             ))}
@@ -908,7 +908,7 @@ export default function Team() {
                     onDelete={handleDeleteUser}
                     canDelete={canDeleteUsers}
                     onUnblock={handleUnblockUser}
-                    canUnblock={role === "super_admin"}
+                    canUnblock={currentUser?.role === "super_admin"}
                   />
                 </motion.div>
               ))
