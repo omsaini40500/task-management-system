@@ -266,7 +266,7 @@ export default function Team() {
   const [filterDept, setFilterDept] = useState("all")
 
   const [activeTab, setActiveTab] =
-    useState<"members" | "departments" | "permissions">("members")
+    useState<"members" | "departments" | "permissions" | "blocked">("members")
 
   const [teamUsers, setTeamUsers] = useState<User[]>([])
 
@@ -574,10 +574,13 @@ export default function Team() {
           border: "1px solid rgba(255,255,255,0.07)",
         }}
       >
-        {(["members", "departments", "permissions"] as const).map((tab) => (
+        {(role === "super_admin"
+          ? ["members", "departments", "permissions", "blocked"]
+          : ["members", "departments", "permissions"]
+        ).map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => setActiveTab(tab as any)}
             className="px-4 py-2 rounded-lg text-xs font-medium capitalize transition-smooth"
             style={{
               background: activeTab === tab ? "#6366f1" : "transparent",
@@ -886,6 +889,30 @@ export default function Team() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {activeTab === "blocked" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {teamUsers.filter(u => u.isBlocked).length === 0 ? (
+            <div className="col-span-full py-12 text-center text-sm" style={{ color: "#6b7280" }}>
+              No blocked accounts found.
+            </div>
+          ) : (
+            teamUsers
+              .filter((user) => user.isBlocked)
+              .map((user, i) => (
+                <motion.div key={user.id} transition={{ delay: i * 0.04 }}>
+                  <MemberCard
+                    user={user}
+                    onDelete={handleDeleteUser}
+                    canDelete={canDeleteUsers}
+                    onUnblock={handleUnblockUser}
+                    canUnblock={role === "super_admin"}
+                  />
+                </motion.div>
+              ))
+          )}
         </div>
       )}
 
