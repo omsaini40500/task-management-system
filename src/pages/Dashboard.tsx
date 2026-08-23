@@ -223,14 +223,16 @@ function KpiCard({
         >
           <Icon size={16} style={{ color }} />
         </div>
-        <div
-          className={`flex items-center gap-1 text-xs font-medium ${
-            changeUp ? "text-green-400" : "text-red-400"
-          }`}
-        >
-          {changeUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-          {change}
-        </div>
+        {change && (
+          <div
+            className={`flex items-center gap-1 text-xs font-medium ${
+              changeUp ? "text-green-400" : "text-red-400"
+            }`}
+          >
+            {changeUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+            {change}
+          </div>
+        )}
       </div>
       <div
         className="text-2xl font-bold text-white"
@@ -536,8 +538,6 @@ export default function Dashboard() {
                 icon: CheckCircle2,
                 label: "Tasks Completed",
                 value: completedToday,
-                change: "+20%",
-                changeUp: true,
                 color: "#22c55e",
               },
 
@@ -545,8 +545,6 @@ export default function Dashboard() {
                 icon: Clock,
                 label: "In Progress",
                 value: inProgress,
-                change: "+5%",
-                changeUp: true,
                 color: "#6366f1",
               },
 
@@ -554,8 +552,6 @@ export default function Dashboard() {
                 icon: AlertTriangle,
                 label: "Overdue",
                 value: overdue,
-                change: "-2",
-                changeUp: false,
                 color: "#ef4444",
               },
 
@@ -563,8 +559,6 @@ export default function Dashboard() {
                 icon: Zap,
                 label: "Pending Approval",
                 value: pendingApproval,
-                change: "+3",
-                changeUp: false,
                 color: "#f59e0b",
               },
 
@@ -573,12 +567,6 @@ export default function Dashboard() {
                 label: "Productivity",
                 value: productivity,
                 suffix: "%",
-                change: reports?.avgProductivityChange
-                  ? `${
-                      reports.avgProductivityChange > 0 ? "+" : ""
-                    }${reports.avgProductivityChange}%`
-                  : "+4%",
-                changeUp: true,
                 color: "#8b5cf6",
               },
 
@@ -594,8 +582,6 @@ export default function Dashboard() {
                           0,
                         ),
                       prefix: "₹",
-                      change: `${expenseSummary?.count ?? expenses.length} items`,
-                      changeUp: false,
                       color: "#ef4444",
                     },
                   ]
@@ -604,8 +590,6 @@ export default function Dashboard() {
                       icon: Users,
                       label: "Active Members",
                       value: teamMemberCount,
-                      change: "stable",
-                      changeUp: true,
                       color: "#10b981",
                     },
                   ]),
@@ -615,8 +599,6 @@ export default function Dashboard() {
                 icon: CheckCircle2,
                 label: "My Completed",
                 value: myCompleted,
-                change: "+2",
-                changeUp: true,
                 color: "#22c55e",
               },
 
@@ -624,8 +606,6 @@ export default function Dashboard() {
                 icon: Clock,
                 label: "My Pending",
                 value: myPending,
-                change: "steady",
-                changeUp: true,
                 color: "#6366f1",
               },
 
@@ -638,8 +618,8 @@ export default function Dashboard() {
                     t.dueDate &&
                     new Date(t.dueDate) < new Date(),
                 ).length,
-                change: "-1",
-                changeUp: true,
+                
+                
                 color: "#ef4444",
               },
             ]
