@@ -451,32 +451,53 @@ function TaskDrawer({
           </div>
         </div>
 
-        {/* Assignees */}
-        <div className="mb-5">
-          <div
-            className="text-xs font-medium mb-2"
-            style={{ color: "#94a3b8" }}
-          >
-            Assignees
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {task.assignedTo.map((uid) => {
-              const u = globalUsers.find((x) => x.id === uid)
+        {/* Assignees & Assigned By */}
+        <div className="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <div
+              className="text-xs font-medium mb-2"
+              style={{ color: "#94a3b8" }}
+            >
+              Assignees
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {task.assignedTo.map((uid) => {
+                const u = globalUsers.find((x) => x.id === uid)
 
-              return (
-                <div
-                  key={uid}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                  }}
-                >
-                  <Avatar userId={uid} size={20} />
-                  <span className="text-xs text-white">{u?.name}</span>
-                </div>
-              )
-            })}
+                return (
+                  <div
+                    key={uid}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
+                    <Avatar userId={uid} size={20} />
+                    <span className="text-xs text-white">{u?.name}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          <div>
+            <div
+              className="text-xs font-medium mb-2"
+              style={{ color: "#94a3b8" }}
+            >
+              Assigned By
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <div
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <span className="text-xs text-white">{task.assignedBy || "System"}</span>
+              </div>
+            </div>
           </div>
         </div>
 
