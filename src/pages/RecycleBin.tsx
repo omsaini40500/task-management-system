@@ -43,11 +43,21 @@ export default function RecycleBin() {
 
   const handleRestore = async (id: string) => {
     try {
-      await api.delete(`/recycle-bin/${id}`)
+      await api.post(`/recycle-bin/${id}/restore`)
 
       setItems(items.filter((item) => item.id !== id))
     } catch (e) {
       console.error("Failed to restore item", e)
+    }
+  }
+
+  const handlePermanentDelete = async (id: string) => {
+    try {
+      await api.delete(`/recycle-bin/${id}`)
+
+      setItems(items.filter((item) => item.id !== id))
+    } catch (e) {
+      console.error("Failed to permanently delete item", e)
     }
   }
 
@@ -112,16 +122,28 @@ export default function RecycleBin() {
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleRestore(item.id)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-                  style={{
-                    backgroundColor: "rgba(16,185,129,0.15)",
-                    color: "#10b981",
-                  }}
-                >
-                  Restore
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleRestore(item.id)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                    style={{
+                      backgroundColor: "rgba(16,185,129,0.15)",
+                      color: "#10b981",
+                    }}
+                  >
+                    Restore
+                  </button>
+                  <button
+                    onClick={() => handlePermanentDelete(item.id)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                    style={{
+                      backgroundColor: "rgba(239,68,68,0.15)",
+                      color: "#ef4444",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
