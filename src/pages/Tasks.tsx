@@ -17,6 +17,7 @@ import {
   Trash,
   Columns,
   Send,
+  Edit2,
 } from "lucide-react"
 
 import { api } from "../api/client"
@@ -234,6 +235,8 @@ function TaskDrawer({
   onDelete,
 
   onUpdateStatus,
+
+  onEdit,
 }: {
   task: ExtendedTask
 
@@ -246,6 +249,8 @@ function TaskDrawer({
     status: TaskStatus,
     pendingReason?: string,
   ) => void
+
+  onEdit: (task: ExtendedTask) => void
 }) {
   const { user } = useAuth()
 
@@ -304,13 +309,24 @@ function TaskDrawer({
         </div>
         <div className="flex items-center gap-2">
           {canDelete && (
-            <button
-              onClick={() => onDelete(task.id)}
-              className="px-2 py-1 rounded text-xs transition-smooth hover:bg-red-500/20 text-red-400"
-            >
-              <Trash size={12} className="inline mr-1" />
-              Delete
-            </button>
+            <>
+              <button
+                onClick={() => {
+                  onEdit(task)
+                }}
+                className="px-2 py-1 rounded text-xs transition-smooth hover:bg-blue-500/20 text-blue-400"
+              >
+                <Edit2 size={12} className="inline mr-1" />
+                Edit
+              </button>
+              <button
+                onClick={() => onDelete(task.id)}
+                className="px-2 py-1 rounded text-xs transition-smooth hover:bg-red-500/20 text-red-400"
+              >
+                <Trash size={12} className="inline mr-1" />
+                Delete
+              </button>
+            </>
           )}
           <button
             onClick={onClose}
@@ -638,6 +654,7 @@ export default function Tasks() {
   const [selectedTask, setSelectedTask] = useState<ExtendedTask | null>(null)
 
   const [showNewTask, setShowNewTask] = useState(false)
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -1130,6 +1147,20 @@ export default function Tasks() {
               onClose={() => setSelectedTask(null)}
               onDelete={handleDeleteTask}
               onUpdateStatus={handleUpdateStatus}
+              onEdit={(task) => {
+                setEditingTaskId(task.id)
+                setFormData({
+                  title: task.title,
+                  description: task.description,
+                  priority: task.priority,
+                  estimatedDays: String(task.estimatedHours / 8),
+                  dueDate: task.dueDate?.split("T")[0] || "",
+                  assignedBy: task.assignedBy,
+                  assignedTo: task.assignedTo[0] || "",
+                })
+                setShowNewTask(true)
+                setSelectedTask(null)
+              }}
             />
           </>
         )}
@@ -1148,7 +1179,19 @@ export default function Tasks() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40"
               style={{ background: "rgba(0,0,0,0.4)" }}
-              onClick={() => setShowNewTask(false)}
+              onClick={() => {
+                setShowNewTask(false)
+                setEditingTaskId(null)
+                setFormData({
+                  title: "",
+                  description: "",
+                  priority: "medium",
+                  estimatedDays: "",
+                  dueDate: "",
+                  assignedBy: "",
+                  assignedTo: "",
+                })
+              }}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
@@ -1162,10 +1205,22 @@ export default function Tasks() {
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold text-white">
-                  Create New Task
+                  {editingTaskId ? "Edit Task" : "Create New Task"}
                 </h2>
                 <button
-                  onClick={() => setShowNewTask(false)}
+                  onClick={() => {
+                    setShowNewTask(false)
+                    setEditingTaskId(null)
+                    setFormData({
+                      title: "",
+                      description: "",
+                      priority: "medium",
+                      estimatedDays: "",
+                      dueDate: "",
+                      assignedBy: "",
+                      assignedTo: "",
+                    })
+                  }}
                   className="text-gray-400 hover:text-white"
                 >
                   <X size={18} />
@@ -1300,9 +1355,16 @@ export default function Tasks() {
                           : [],
                       }
 
-                      const newTask = await api.post<any>("/tasks", payload)
-
-                      setTasks((prev) => [newTask, ...prev])
+                      if (editingTaskId) {
+                        const updatedTask = await api.patch<any>(`/tasks/${editingTaskId}`, payload)
+                        setTasks((prev) =>
+                          prev.map((t) => (t.id === editingTaskId ? { ...t, ...updatedTask } : t))
+                        )
+                        setEditingTaskId(null)
+                      } else {
+                        const newTask = await api.post<any>("/tasks", payload)
+                        setTasks((prev) => [newTask, ...prev])
+                      }
 
                       setShowNewTask(false)
 
@@ -1322,7 +1384,13 @@ export default function Tasks() {
                     }
                   }}
                 >
-                  {isCreating ? "Creating..." : "Create Task"}
+                  {isCreating
+                    ? editingTaskId
+                      ? "Saving..."
+                      : "Creating..."
+                    : editingTaskId
+                      ? "Save Changes"
+                      : "Create Task"}
                 </button>
               </div>
             </motion.div>
