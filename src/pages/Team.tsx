@@ -293,7 +293,7 @@ export default function Team() {
           setImmediateForm((prev) => ({ ...prev, department: depts[0].id }))
         }
 
-        const isShalom = currentUser?.department?.toLowerCase() === "shalom"
+        const isShalom = currentUser?.department?.toLowerCase() === "shalom" || currentUser?.department?.toLowerCase() === "shellom"
         
         const mapped = usersData.map((u) => ({
             ...u,
@@ -309,7 +309,7 @@ export default function Team() {
           }))
 
         setTeamUsers(
-          isShalom ? mapped.filter(u => u.department.toLowerCase() === "shalom") : mapped
+          isShalom ? mapped.filter(u => u.department.toLowerCase() === "shalom" || u.department.toLowerCase() === "shellom") : mapped
         )
       })
       .catch(console.error)

@@ -156,7 +156,7 @@ export default function Sidebar({
 
   const isClient = user?.role === "client"
 
-  const isShalom = user?.department?.toLowerCase() === "shalom"
+  const isShalom = user?.department?.toLowerCase() === "shalom" || user?.department?.toLowerCase() === "shellom"
 
   const visibleNavItems = isClient ? clientNavItems : navItems.filter(item => {
     if (isShalom) {

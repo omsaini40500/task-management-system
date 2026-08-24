@@ -300,7 +300,7 @@ export default function Dashboard() {
 
   const role = user?.role || "member"
 
-  const isShalom = user?.department?.toLowerCase() === "shalom"
+  const isShalom = user?.department?.toLowerCase() === "shalom" || user?.department?.toLowerCase() === "shellom"
 
   const canViewRevenue = (role === "super_admin" || role === "admin") && !isShalom
 
