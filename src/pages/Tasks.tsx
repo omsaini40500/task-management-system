@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNotificationSound } from "../hooks/useNotificationSound"
 
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -597,6 +598,7 @@ function TaskDrawer({
 
 export default function Tasks() {
   const { user } = useAuth()
+  const { play: playSound } = useNotificationSound()
 
   const [view, setView] = useState<View>("kanban")
 
@@ -1363,6 +1365,7 @@ export default function Tasks() {
                         setEditingTaskId(null)
                       } else {
                         const newTask = await api.post<any>("/tasks", payload)
+                        playSound()
                         setTasks((prev) => [newTask, ...prev])
                       }
 

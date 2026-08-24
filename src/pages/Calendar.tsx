@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNotificationSound } from "../hooks/useNotificationSound"
 
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -35,6 +36,7 @@ const MONTHS = [
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 export default function Calendar() {
+  const { play: playSound } = useNotificationSound()
   const [year, setYear] = useState(() => new Date().getFullYear())
 
   const [month, setMonth] = useState(() => new Date().getMonth())
@@ -459,7 +461,7 @@ export default function Calendar() {
                       }
 
                       const newTask = await api.post<any>("/tasks", payload)
-
+                      playSound()
                       setTasksList((prev) => [newTask, ...prev])
 
                       setShowNewEvent(false)

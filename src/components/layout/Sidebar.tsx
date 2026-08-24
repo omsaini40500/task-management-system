@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNotificationSound } from "../../hooks/useNotificationSound"
 
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -150,7 +151,7 @@ export default function Sidebar({
   const [unreadCount, setUnreadCount] = useState(0)
 
   const { user } = useAuth()
-
+  const { play: playSound } = useNotificationSound()
   const location = useLocation()
 
   const isClient = user?.role === "client"
@@ -318,6 +319,7 @@ export default function Sidebar({
                 key={item.to}
                 to={item.to}
                 onClick={() => {
+                  playSound()
                   if (isMobile) setMobileMenuOpen?.(false)
                 }}
               >
