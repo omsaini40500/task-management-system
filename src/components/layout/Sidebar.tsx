@@ -155,7 +155,16 @@ export default function Sidebar({
 
   const isClient = user?.role === "client"
 
+  const isShalom = user?.department?.toLowerCase() === "shalom"
+
   const visibleNavItems = isClient ? clientNavItems : navItems.filter(item => {
+    if (isShalom) {
+      const hiddenForShalom = ["Campaigns", "Clients", "Finance", "Activity", "Projects", "Workflows", "Meetings"]
+      if (hiddenForShalom.includes(item.label)) {
+        return false
+      }
+    }
+
     if (item.label === "Finance") {
       return user?.role === "super_admin" || (user?.department && user.department.toLowerCase().includes("finance"))
     }

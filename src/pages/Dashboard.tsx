@@ -300,15 +300,17 @@ export default function Dashboard() {
 
   const role = user?.role || "member"
 
-  const canViewRevenue = role === "super_admin" || role === "admin"
+  const isShalom = user?.department?.toLowerCase() === "shalom"
+
+  const canViewRevenue = (role === "super_admin" || role === "admin") && !isShalom
 
   const canViewTeamPerf =
-    role === "super_admin" ||
+    (role === "super_admin" ||
     role === "admin" ||
     role === "team_leader" ||
-    role === "project_manager"
+    role === "project_manager") && !isShalom
 
-  const isOnlyMember = role === "member" || role === "client"
+  const isOnlyMember = role === "member" || role === "client" || isShalom
 
   useEffect(() => {
     const load = async () => {

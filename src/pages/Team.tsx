@@ -279,6 +279,8 @@ export default function Team() {
     name: string
   }>>([])
 
+  const { user: currentUser } = useAuth()
+
   useEffect(() => {
     Promise.all([
       api.get<{ items: any[] }>("/users").then((r) => r.items),
@@ -290,30 +292,28 @@ export default function Team() {
           setInviteForm((prev) => ({ ...prev, department: depts[0].id }))
           setImmediateForm((prev) => ({ ...prev, department: depts[0].id }))
         }
-        setTeamUsers(
-          usersData.map((u) => ({
+
+        const isShalom = currentUser?.department?.toLowerCase() === "shalom"
+        
+        const mapped = usersData.map((u) => ({
             ...u,
-
             department: resolveDeptName(u.departmentId) || "Unassigned",
-
             team: u.teamId || "",
-
             tasksCompleted: u.tasksCompleted || 0,
-
             tasksTotal: u.tasksTotal || 0,
-
             lastActive: u.lastActiveAt
               ? new Date(u.lastActiveAt).toLocaleDateString()
               : "Never",
-
             isActive: u.isActive ?? true,
-
             status: u.isActive ? "active" : "inactive",
-          })),
+          }))
+
+        setTeamUsers(
+          isShalom ? mapped.filter(u => u.department.toLowerCase() === "shalom") : mapped
         )
       })
       .catch(console.error)
-  }, [])
+  }, [currentUser?.department])
 
   // Form State for Invite Member
 
@@ -342,8 +342,6 @@ export default function Team() {
 
     password: "",
   })
-
-  const { user: currentUser } = useAuth()
 
   const canDeleteUsers = currentUser?.role === "super_admin"
 
