@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNotificationSound } from "../hooks/useNotificationSound"
+import useNotificationSound from "../hooks/useNotificationSound"
 
 import { motion, AnimatePresence } from "framer-motion"
 
