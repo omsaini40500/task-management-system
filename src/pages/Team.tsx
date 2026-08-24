@@ -393,11 +393,13 @@ export default function Team() {
     }
   }
 
+  const [isInviting, setIsInviting] = useState(false)
+  
   const handleInviteSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!inviteForm.name || !inviteForm.email) return
-
+    if (!inviteForm.name || !inviteForm.email || isInviting) return
+    setIsInviting(true)
     try {
       const u = await api.post<any>("/users", {
         name: inviteForm.name,
@@ -439,9 +441,9 @@ export default function Team() {
       ])
 
       setShowInviteModal(false)
-
-      setInviteForm({
-        name: "",
+      alert(msg)
+    } finally { setIsInviting(false) }
+  }
         email: "",
         role: "member",
         department: realDepartments.length > 0 ? realDepartments[0].id : "",
@@ -1040,9 +1042,10 @@ export default function Team() {
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary text-xs px-4 py-2 rounded-lg"
+                    disabled={isInviting}
+                    className="btn btn-primary text-xs px-4 py-2 rounded-lg disabled:opacity-50"
                   >
-                    Send Invitation
+                    {isInviting ? "Sending..." : "Send Invitation"}
                   </button>
                 </div>
               </form>
