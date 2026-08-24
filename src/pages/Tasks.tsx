@@ -405,7 +405,7 @@ function TaskDrawer({
         {/* Time */}
         <div className="grid grid-cols-3 gap-3 mb-5">
           {[
-            { label: "Estimated", value: `${task.estimatedHours}h` },
+            { label: "Estimated", value: `${task.estimatedHours / 8}d` },
             { label: "Spent", value: `${task.spentHours}h` },
             {
               label: "Remaining",
@@ -643,7 +643,7 @@ export default function Tasks() {
     title: "",
     description: "",
     priority: "medium" as Priority,
-    estimatedHours: "",
+    estimatedDays: "",
     dueDate: "",
     assignedBy: "",
     assignedTo: "",
@@ -1217,17 +1217,17 @@ export default function Tasks() {
                 </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-400 mb-1">
-                      Estimated Hours
+                      Est. Days
                     </label>
                     <input
                       type="number"
                       className="w-full bg-[#0d0e14] border border-white/10 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-indigo-500"
                       placeholder="e.g. 5"
-                      value={formData.estimatedHours}
+                      value={formData.estimatedDays}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
-                          estimatedHours: e.target.value,
+                          estimatedDays: e.target.value,
                         }))
                       }
                     />
@@ -1293,7 +1293,7 @@ export default function Tasks() {
                         title: formData.title || "Unnamed Task",
                         description: formData.description || "",
                         priority: formData.priority,
-                        estimatedHours: Number(formData.estimatedHours) || 0,
+                        estimatedHours: Number(formData.estimatedDays) * 8 || 0,
                         dueDate: formData.dueDate || undefined,
                         assignedTo: formData.assignedTo
                           ? [formData.assignedTo]
@@ -1310,7 +1310,7 @@ export default function Tasks() {
                         title: "",
                         description: "",
                         priority: "medium",
-                        estimatedHours: "",
+                        estimatedDays: "",
                         dueDate: "",
                         assignedBy: "",
                         assignedTo: "",

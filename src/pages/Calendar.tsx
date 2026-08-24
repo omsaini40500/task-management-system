@@ -429,11 +429,11 @@ export default function Calendar() {
 
                         description: eventForm.description || "",
 
-                        start_date:
+                        startDate:
                           eventForm.startDate ||
                           new Date().toISOString().split("T")[0],
 
-                        due_date:
+                        dueDate:
                           eventForm.dueDate ||
                           new Date().toISOString().split("T")[0],
 
@@ -443,9 +443,9 @@ export default function Calendar() {
 
                         progress: 0,
 
-                        estimated_hours: 0,
+                        estimatedHours: 0,
 
-                        assigned_to: [],
+                        assignedTo: [],
 
                         tags: [],
 

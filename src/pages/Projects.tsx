@@ -624,7 +624,7 @@ export default function Projects() {
 
                         budget: Number(formData.budget) || 10000,
 
-                        manager_id: formData.manager || undefined,
+                        managerId: formData.manager || undefined,
 
                         team: formData.manager ? [formData.manager] : [],
                       }
