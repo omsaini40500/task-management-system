@@ -50,6 +50,7 @@ export default function Login() {
     try {
       const role = await login(data.email.trim().toLowerCase(), data.password)
       if (role) {
+        playSound()
         navigate(homePathForRole(role))
       }
     } catch (e: any) {
