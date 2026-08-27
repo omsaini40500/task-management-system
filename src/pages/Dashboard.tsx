@@ -509,6 +509,21 @@ export default function Dashboard() {
   if (user?.role === "client") {
     return (
       <div className="page">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <h2
+            className="text-2xl font-bold text-white mb-1"
+            style={{ fontFamily: "DM Sans, sans-serif" }}
+          >
+            {greeting}, {user?.name} 👋
+          </h2>
+          <p className="text-gray-400">
+            Welcome to your Performance Dashboard. Here is how your campaigns are doing.
+          </p>
+        </motion.div>
         <ClientDashboard />
       </div>
     )
