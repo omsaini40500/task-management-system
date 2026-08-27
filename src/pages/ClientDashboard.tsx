@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { TrendingUp, ShoppingCart, DollarSign, Target, Activity } from "lucide-react"
+import { TrendingUp, ShoppingCart, DollarSign, Target, Activity, Download } from "lucide-react"
 
 const weeklyData = [
   { name: "Week 1\n01-09th", spend: 1054, purchases: 15, roas: 2.1, revenue: 2258 },
@@ -98,6 +98,24 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
     const newData = [...data]
     newData[index] = { ...newData[index], [field]: value }
     setData(newData)
+  }
+
+  const handleDownloadCSV = () => {
+    const headers = ["Metrics", "Week 1", "Week 2", "Week 3", "Change"]
+    const csvContent = [
+      headers.join(","),
+      ...data.map(row => 
+        `"${row.metric}","${row.w1}","${row.w2}","${row.w3}","${row.change}"`
+      )
+    ].join("\n")
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute("download", "performance_scorecard.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   return (
@@ -253,17 +271,23 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
         >
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">KEY PERFORMANCE SCORECARD</h3>
-            {isEmployee && (
-              isEditing ? (
-                <button onClick={handleSave} className="text-xs px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium">
-                  Save Changes
-                </button>
-              ) : (
-                <button onClick={() => setIsEditing(true)} className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
-                  Edit Scorecard
-                </button>
-              )
-            )}
+            <div className="flex items-center gap-2">
+              <button onClick={handleDownloadCSV} className="flex items-center gap-2 text-xs px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 rounded-lg transition-colors font-medium">
+                <Download size={14} />
+                Export CSV
+              </button>
+              {isEmployee && (
+                isEditing ? (
+                  <button onClick={handleSave} className="text-xs px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium">
+                    Save Changes
+                  </button>
+                ) : (
+                  <button onClick={() => setIsEditing(true)} className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
+                    Edit Scorecard
+                  </button>
+                )
+              )}
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
