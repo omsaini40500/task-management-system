@@ -33,7 +33,7 @@ const scorecardData = [
 
 export default function ClientDashboard() {
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-[1600px] mx-auto pb-24">
+    <div className="space-y-6 mb-8">
       {/* Header Banner */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
