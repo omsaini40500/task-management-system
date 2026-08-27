@@ -9,7 +9,8 @@ export default function PerformanceMarketing() {
   useEffect(() => {
     api.get("/users")
       .then(res => {
-        const clientUsers = res.data.filter((u: any) => u.role === "client")
+        const usersArray = res.data.items || res.data || []
+        const clientUsers = usersArray.filter((u: any) => u.role === "client")
         setClients(clientUsers)
         if (clientUsers.length > 0) {
           setSelectedClientId(clientUsers[0].id)
