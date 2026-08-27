@@ -88,6 +88,8 @@ const navItems = [
 ]
 
 const clientNavItems = [
+  { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+
   { icon: Rocket, label: "Campaigns", to: "/campaigns" },
 
   { icon: CheckCircle, label: "Approvals", to: "/approvals" },
