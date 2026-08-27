@@ -1005,31 +1005,33 @@ export default function Team() {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1">
-                      Department
-                    </label>
-                    <select
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
-                      value={inviteForm.department}
-                      onChange={(e) =>
-                        setInviteForm({
-                          ...inviteForm,
-                          department: e.target.value,
-                        })
-                      }
-                    >
-                      {realDepartments.length > 0 ? (
-                        realDepartments.map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="">No departments available</option>
-                      )}
-                    </select>
-                  </div>
+                  {inviteForm.role !== "client" && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">
+                        Department
+                      </label>
+                      <select
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                        value={inviteForm.department}
+                        onChange={(e) =>
+                          setInviteForm({
+                            ...inviteForm,
+                            department: e.target.value,
+                          })
+                        }
+                      >
+                        {realDepartments.length > 0 ? (
+                          realDepartments.map((d) => (
+                            <option key={d.id} value={d.id}>
+                              {d.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">No departments available</option>
+                        )}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-2 mt-6">
@@ -1162,31 +1164,33 @@ export default function Team() {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1">
-                      Department
-                    </label>
-                    <select
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
-                      value={immediateForm.department}
-                      onChange={(e) =>
-                        setImmediateForm({
-                          ...immediateForm,
-                          department: e.target.value,
-                        })
-                      }
-                    >
-                      {realDepartments.length > 0 ? (
-                        realDepartments.map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.name}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="">No departments available</option>
-                      )}
-                    </select>
-                  </div>
+                  {immediateForm.role !== "client" && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">
+                        Department
+                      </label>
+                      <select
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                        value={immediateForm.department}
+                        onChange={(e) =>
+                          setImmediateForm({
+                            ...immediateForm,
+                            department: e.target.value,
+                          })
+                        }
+                      >
+                        {realDepartments.length > 0 ? (
+                          realDepartments.map((d) => (
+                            <option key={d.id} value={d.id}>
+                              {d.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">No departments available</option>
+                        )}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-2 mt-6">

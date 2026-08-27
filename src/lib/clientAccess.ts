@@ -1,12 +1,10 @@
-export const CLIENT_HOME = "/campaigns"
+export const CLIENT_HOME = "/dashboard"
 
 export const CLIENT_ROUTES = [
+  "/dashboard",
   "/campaigns",
-
   "/approvals",
-
   "/notifications",
-
   "/ai",
 ] as const
 
@@ -15,5 +13,5 @@ export function isClientRoute(path: string) {
 }
 
 export function homePathForRole(role?: string) {
-  return role === "client" ? CLIENT_HOME : "/dashboard"
+  return "/dashboard"
 }
