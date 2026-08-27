@@ -506,9 +506,16 @@ export default function Dashboard() {
     tasks: p.tasks,
   }))
 
+  if (user?.role === "client") {
+    return (
+      <div className="page">
+        <ClientDashboard />
+      </div>
+    )
+  }
+
   return (
     <div className="page">
-      {user?.role === "client" && <ClientDashboard />}
       {/* Welcome */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
