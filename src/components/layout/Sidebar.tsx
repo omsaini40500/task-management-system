@@ -290,12 +290,7 @@ export default function Sidebar({
             animate={{ opacity: 1 }}
             className="px-3 pt-3 pb-1 flex gap-2"
           >
-            <button
-              className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-smooth"
-              style={{ background: "#6366f1", color: "white" }}
-            >
-              <Plus size={12} /> New Task
-            </button>
+            
             <button
               className="w-9 h-9 rounded-lg flex items-center justify-center transition-smooth"
               style={{
@@ -451,3 +446,4 @@ export default function Sidebar({
     </>
   )
 }
+

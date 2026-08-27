@@ -184,14 +184,7 @@ export default function Header({
         )}
 
         {/* Actions */}
-        {!isClient && (
-          <button
-            className="btn btn-primary text-xs hidden sm:flex"
-            onClick={() => navigate("/tasks")}
-          >
-            <Plus size={13} /> New Task
-          </button>
-        )}
+        
 
         <button
           onClick={toggleTheme}
@@ -438,3 +431,4 @@ export default function Header({
     </>
   )
 }
+
