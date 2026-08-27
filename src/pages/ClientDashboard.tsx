@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react"`nimport { api } from "../api/client"`nimport { useAuth } from "../context/AuthContext"
+import React, { useState, useEffect } from "react"
+import { api } from "../api/client"
+import { useAuth } from "../context/AuthContext"
 import { motion } from "framer-motion"
 import {
   ComposedChart,
