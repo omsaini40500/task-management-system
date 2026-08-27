@@ -222,38 +222,40 @@ function MemberCard({
         </div>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs" style={{ color: "#6b7280" }}>
-            Task completion
-          </span>
-          <span className="text-xs font-semibold text-white">
-            {user.tasksCompleted}/{user.tasksTotal}
-          </span>
+      {user.role !== 'client' && (
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs" style={{ color: "#6b7280" }}>
+              Task completion
+            </span>
+            <span className="text-xs font-semibold text-white">
+              {user.tasksCompleted}/{user.tasksTotal}
+            </span>
+          </div>
+          <div
+            className="h-1.5 rounded-full overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.06)" }}
+          >
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${completion}%` }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="h-full rounded-full"
+              style={{
+                background:
+                  completion > 80
+                    ? "#22c55e"
+                    : completion > 60
+                      ? "#6366f1"
+                      : "#f59e0b",
+              }}
+            />
+          </div>
+          <div className="text-xs mt-1 text-right" style={{ color: "#6b7280" }}>
+            {completion}%
+          </div>
         </div>
-        <div
-          className="h-1.5 rounded-full overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.06)" }}
-        >
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${completion}%` }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="h-full rounded-full"
-            style={{
-              background:
-                completion > 80
-                  ? "#22c55e"
-                  : completion > 60
-                    ? "#6366f1"
-                    : "#f59e0b",
-            }}
-          />
-        </div>
-        <div className="text-xs mt-1 text-right" style={{ color: "#6b7280" }}>
-          {completion}%
-        </div>
-      </div>
+      )}
     </motion.div>
   )
 }
