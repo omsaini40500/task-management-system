@@ -74,10 +74,10 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
 
   useEffect(() => {
     if (clientId) {
-      api.get(`/clients/${clientId}/scorecard`)
+      api.get<any>(`/clients/${clientId}/scorecard`)
         .then(res => {
-          if (res.data?.data && res.data.data.length > 0) {
-            setData(res.data.data)
+          if (res?.data && res.data.length > 0) {
+            setData(res.data)
           } else {
             setData(scorecardData)
           }
