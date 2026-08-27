@@ -440,16 +440,16 @@ export default function Team() {
         },
       ])
 
-      setShowInviteModal(false)
-      alert(msg)
-    } finally { setIsInviting(false) }
-  }
+      setInviteForm({
+        name: "",
         email: "",
-        role: "member",
+        role: "member" as any,
         department: realDepartments.length > 0 ? realDepartments[0].id : "",
       })
 
       window.dispatchEvent(new Event("users-updated"))
+      setShowInviteModal(false)
+      alert(msg)
     } catch (e: any) {
       console.error(e)
 
@@ -460,7 +460,7 @@ export default function Team() {
         : e?.message || "An error occurred"
 
       alert(msg)
-    }
+    } finally { setIsInviting(false) }
   }
 
   const handleAddImmediateSubmit = async (e: React.FormEvent) => {
