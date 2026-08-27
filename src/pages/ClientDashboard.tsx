@@ -39,7 +39,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
   const [data, setData] = useState(scorecardData)
   const [isEditing, setIsEditing] = useState(false)
   const [chartData, setChartData] = useState(weeklyData)
-  const [funnelData, setFunnelData] = useState({ atc: "0", checkouts: "0", purchases: "0" }); const [bannerData, setBannerData] = useState({ roas: "0x", roasChange: "0%", purchases: "0%", spend: "0%" })
+  const [funnelData, setFunnelData] = useState({ atc: "0", checkouts: "0", purchases: "0", atcToCheckouts: "0%", atcToCheckoutsChange: "0%", atcToPurchases: "0%", atcToPurchasesChange: "0%" }); const [bannerData, setBannerData] = useState({ roas: "0x", roasChange: "0%", purchases: "0%", spend: "0%" })
 
   useEffect(() => {
     try {
@@ -51,6 +51,8 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
       const revRow = data.find(d => d.metric.includes("Revenue"));
       const atcRow = data.find(d => d.metric.includes("Add to Cart"));
       const checkoutsRow = data.find(d => d.metric.includes("Checkouts Initiated"));
+      const atcToCheckoutsRow = data.find(d => d.metric.includes("ATC → Checkouts"));
+      const atcToPurchasesRow = data.find(d => d.metric.includes("ATC → Purchases"));
       
       if (spendRow && purRow && roasRow && revRow) {
         setChartData([
@@ -64,7 +66,11 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
         setFunnelData({
           atc: atcRow.w3,
           checkouts: checkoutsRow.w3,
-          purchases: purRow.w3
+          purchases: purRow.w3,
+          atcToCheckouts: atcToCheckoutsRow?.w3 || "0%",
+          atcToCheckoutsChange: atcToCheckoutsRow ? `Up from ${atcToCheckoutsRow.w1} in Week 1` : "",
+          atcToPurchases: atcToPurchasesRow?.w3 || "0%",
+          atcToPurchasesChange: atcToPurchasesRow ? `Up from ${atcToPurchasesRow.w1} in Week 1` : ""
         })
       }
       
@@ -270,13 +276,13 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           <div className="mt-8 flex items-center justify-between gap-4">
             <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/5 hover:border-blue-500/30 transition-colors duration-300">
               <div className="text-xs text-gray-400 mb-1 font-semibold tracking-wider">ATC → CHECKOUTS</div>
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">18%</div>
-              <div className="text-xs text-green-400 mt-1">Up from 14% in Week 1</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{funnelData.atcToCheckouts}</div>
+              <div className="text-xs text-green-400 mt-1">{funnelData.atcToCheckoutsChange}</div>
             </div>
             <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/5 hover:border-emerald-500/30 transition-colors duration-300">
               <div className="text-xs text-gray-400 mb-1 font-semibold tracking-wider">ATC → PURCHASES</div>
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">8%</div>
-              <div className="text-xs text-emerald-400 mt-1">Up from 5% in Week 1</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">{funnelData.atcToPurchases}</div>
+              <div className="text-xs text-emerald-400 mt-1">{funnelData.atcToPurchasesChange}</div>
             </div>
           </div>
         </motion.div>
