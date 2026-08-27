@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-
+import ClientDashboard from "./ClientDashboard"
 import { motion } from "framer-motion"
 
 import {
@@ -505,6 +505,10 @@ export default function Dashboard() {
 
     tasks: p.tasks,
   }))
+
+  if (user?.role === "client") {
+    return <ClientDashboard />
+  }
 
   return (
     <div className="page">
