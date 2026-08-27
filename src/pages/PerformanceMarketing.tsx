@@ -40,7 +40,7 @@ export default function PerformanceMarketing() {
         </div>
       </div>
       {selectedClientId ? (
-        <ClientDashboard isEmployee={true} targetClientId={selectedClientId} />
+        <ClientDashboard key={selectedClientId} isEmployee={true} targetClientId={selectedClientId} />
       ) : (
         <div className="text-center py-10 text-gray-400">No clients available</div>
       )}
