@@ -38,7 +38,40 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
   const clientId = isEmployee ? targetClientId : user?.id
   const [data, setData] = useState(scorecardData)
   const [isEditing, setIsEditing] = useState(false)
-  
+  const [chartData, setChartData] = useState(weeklyData)
+  const [funnelData, setFunnelData] = useState({ atc: "425", checkouts: "77", purchases: "35" })
+
+  useEffect(() => {
+    try {
+      const getNum = (val: string) => Number(String(val).replace(/[^0-9.-]+/g,"")) || 0;
+      
+      const spendRow = data.find(d => d.metric.includes("Spend"));
+      const purRow = data.find(d => d.metric.includes("Purchases") && !d.metric.includes("%"));
+      const roasRow = data.find(d => d.metric.includes("ROAS"));
+      const revRow = data.find(d => d.metric.includes("Revenue"));
+      const atcRow = data.find(d => d.metric.includes("Add to Cart"));
+      const checkoutsRow = data.find(d => d.metric.includes("Checkouts Initiated"));
+      
+      if (spendRow && purRow && roasRow && revRow) {
+        setChartData([
+          { name: "Week 1", spend: getNum(spendRow.w1), purchases: getNum(purRow.w1), roas: getNum(roasRow.w1), revenue: getNum(revRow.w1) },
+          { name: "Week 2", spend: getNum(spendRow.w2), purchases: getNum(purRow.w2), roas: getNum(roasRow.w2), revenue: getNum(revRow.w2) },
+          { name: "Week 3", spend: getNum(spendRow.w3), purchases: getNum(purRow.w3), roas: getNum(roasRow.w3), revenue: getNum(revRow.w3) },
+        ])
+      }
+      
+      if (atcRow && checkoutsRow && purRow) {
+        setFunnelData({
+          atc: atcRow.w3,
+          checkouts: checkoutsRow.w3,
+          purchases: purRow.w3
+        })
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }, [data])
+
   useEffect(() => {
     if (clientId) {
       api.get(`/clients/${clientId}/scorecard`)
@@ -112,7 +145,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           </div>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={weeklyData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <ComposedChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} />
                 <YAxis yAxisId="left" stroke="#9ca3af" fontSize={12} tickFormatter={(val) => `$${val}`} />
@@ -145,7 +178,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           </div>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={weeklyData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <ComposedChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} />
                 <YAxis yAxisId="left" stroke="#9ca3af" fontSize={12} tickFormatter={(val) => `$${val}`} />
@@ -181,19 +214,19 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           <div className="flex-1 flex flex-col items-center justify-center space-y-2 w-full max-w-sm mx-auto mt-4">
             {/* Level 1 */}
             <div className="w-full bg-[#1e293b] text-white rounded-t-lg rounded-b-md p-4 text-center border-b-[16px] border-transparent" style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 15% 100%)" }}>
-              <div className="text-3xl font-bold">425</div>
+              <div className="text-3xl font-bold">{funnelData.atc}</div>
               <div className="text-xs text-gray-400">Add to Carts</div>
             </div>
             
             {/* Level 2 */}
             <div className="w-[85%] bg-[#3b82f6] text-white rounded-md p-4 text-center" style={{ clipPath: "polygon(0 0, 100% 0, 80% 100%, 20% 100%)" }}>
-              <div className="text-2xl font-bold">77</div>
+              <div className="text-2xl font-bold">{funnelData.checkouts}</div>
               <div className="text-xs text-blue-200">Checkouts Initiated</div>
             </div>
 
             {/* Level 3 */}
             <div className="w-[68%] bg-[#10b981] text-white rounded-b-lg rounded-t-md p-4 text-center" style={{ clipPath: "polygon(0 0, 100% 0, 90% 100%, 10% 100%)" }}>
-              <div className="text-2xl font-bold">35</div>
+              <div className="text-2xl font-bold">{funnelData.purchases}</div>
               <div className="text-xs text-green-200">Purchases</div>
             </div>
           </div>
