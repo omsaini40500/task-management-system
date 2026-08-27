@@ -266,7 +266,7 @@ export default function Team() {
   const [filterDept, setFilterDept] = useState("all")
 
   const [activeTab, setActiveTab] =
-    useState<"members" | "departments" | "permissions" | "blocked">("members")
+    useState<"members" | "departments" | "clients" | "blocked" | "permissions">("members")
 
   const [teamUsers, setTeamUsers] = useState<User[]>([])
 
@@ -354,6 +354,9 @@ export default function Team() {
       !u.email.toLowerCase().includes(search.toLowerCase())
     )
       return false
+
+    if (activeTab === "members" && u.role === "client") return false
+    if (activeTab === "clients" && u.role !== "client") return false
 
     if (filterRole !== "all" && u.role !== filterRole) return false
 
@@ -575,8 +578,8 @@ export default function Team() {
         }}
       >
         {(currentUser?.role === "super_admin"
-          ? ["members", "departments", "permissions", "blocked"]
-          : ["members", "departments", "permissions"]
+          ? ["members", "clients", "departments", "blocked"]
+          : ["members", "clients", "departments"]
         ).map((tab) => (
           <button
             key={tab}
@@ -592,7 +595,7 @@ export default function Team() {
         ))}
       </div>
 
-      {activeTab === "members" && (
+      {(activeTab === "members" || activeTab === "clients") && (
         <>
           {/* Filters */}
           <div className="flex items-center gap-3 mb-5 flex-wrap">
