@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"`nimport { api } from "../api/client"`nimport { useAuth } from "../context/AuthContext"
 import { motion } from "framer-motion"
 import {
   ComposedChart,
@@ -31,7 +31,40 @@ const scorecardData = [
   { icon: Target, metric: "Checkouts ? Purchases %", w1: "33%", w2: "47%", w3: "45%", change: "+12 pp", type: "positive" },
 ]
 
-export default function ClientDashboard({ isEmployee = false }: { isEmployee?: boolean }) {
+export default function ClientDashboard({ isEmployee = false, targetClientId }: { isEmployee?: boolean, targetClientId?: string }) {
+  const { user } = useAuth()
+  const clientId = isEmployee ? targetClientId : user?.id
+  const [data, setData] = useState(scorecardData)
+  const [isEditing, setIsEditing] = useState(false)
+  
+  useEffect(() => {
+    if (clientId) {
+      api.get(`/clients/${clientId}/scorecard`)
+        .then(res => {
+          if (res.data?.data && res.data.data.length > 0) {
+            setData(res.data.data)
+          } else {
+            setData(scorecardData)
+          }
+        })
+        .catch(err => console.error(err))
+    }
+  }, [clientId])
+
+  const handleSave = () => {
+    if (clientId) {
+      api.put(`/clients/${clientId}/scorecard`, { data })
+        .then(() => setIsEditing(false))
+        .catch(err => console.error(err))
+    }
+  }
+
+  const handleChange = (index: number, field: string, value: string) => {
+    const newData = [...data]
+    newData[index] = { ...newData[index], [field]: value }
+    setData(newData)
+  }
+
   return (
     <div className="space-y-6 mb-8">
       {/* Header Banner */}
@@ -186,9 +219,15 @@ export default function ClientDashboard({ isEmployee = false }: { isEmployee?: b
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">KEY PERFORMANCE SCORECARD</h3>
             {isEmployee && (
-              <button className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
-                Edit Scorecard
-              </button>
+              isEditing ? (
+                <button onClick={handleSave} className="text-xs px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium">
+                  Save Changes
+                </button>
+              ) : (
+                <button onClick={() => setIsEditing(true)} className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
+                  Edit Scorecard
+                </button>
+              )
             )}
           </div>
           <div className="overflow-x-auto">
@@ -199,23 +238,29 @@ export default function ClientDashboard({ isEmployee = false }: { isEmployee?: b
                   <th className="px-4 py-3 font-medium text-right">WEEK 1<br/>01-09th</th>
                   <th className="px-4 py-3 font-medium text-right">WEEK 2<br/>10th-16th</th>
                   <th className="px-4 py-3 font-medium text-right bg-indigo-500/10 text-indigo-300">WEEK 3<br/>17th-23rd</th>
-                  <th className="px-4 py-3 font-medium text-right rounded-tr-lg">W1 ? W3<br/>CHANGE</th>
+                  <th className="px-4 py-3 font-medium text-right rounded-tr-lg">W1 → W3<br/>CHANGE</th>
                 </tr>
               </thead>
               <tbody>
-                {scorecardData.map((row, i) => {
-                  const Icon = row.icon;
+                {data.map((row, i) => {
+                  const Icon = row.icon || DollarSign; // fallback icon if not saved properly
                   return (
                     <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-300 flex items-center gap-2">
-                        <Icon size={14} className="text-gray-500" />
+                      <td className="px-4 py-3 font-medium text-gray-300 flex items-center gap-2 whitespace-nowrap">
+                        <DollarSign size={14} className="text-gray-500" />
                         {row.metric}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-400">{row.w1}</td>
-                      <td className="px-4 py-3 text-right text-gray-400">{row.w2}</td>
-                      <td className="px-4 py-3 text-right font-medium text-white bg-indigo-500/5">{row.w3}</td>
-                      <td className={`px-4 py-3 text-right font-medium ${row.type === 'positive' ? 'text-green-400' : 'text-green-400'}`}>
-                        {row.change}
+                      <td className="px-4 py-3 text-right text-gray-400">
+                        {isEditing ? <input value={row.w1} onChange={(e) => handleChange(i, 'w1', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w1}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-400">
+                        {isEditing ? <input value={row.w2} onChange={(e) => handleChange(i, 'w2', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w2}
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium text-white bg-indigo-500/5">
+                        {isEditing ? <input value={row.w3} onChange={(e) => handleChange(i, 'w3', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w3}
+                      </td>
+                      <td className={`px-4 py-3 text-right font-medium text-green-400`}>
+                        {isEditing ? <input value={row.change} onChange={(e) => handleChange(i, 'change', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.change}
                       </td>
                     </tr>
                   )
