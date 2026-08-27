@@ -22,15 +22,15 @@ const weeklyData = [
 ]
 
 const scorecardData = [
-  { icon: DollarSign, metric: "Spend (USD)", w1: "$1,054", w2: "$827", w3: "$834", change: "-21%", type: "positive" },
-  { icon: ShoppingCart, metric: "Purchases", w1: "15", w2: "20", w3: "35", change: "+133%", type: "positive" },
-  { icon: DollarSign, metric: "Revenue (USD)", w1: "$2,258", w2: "$1,992", w3: "$3,153", change: "+40%", type: "positive" },
-  { icon: TrendingUp, metric: "ROAS (x)", w1: "2.1x", w2: "2.4x", w3: "3.8x", change: "+81%", type: "positive" },
-  { icon: ShoppingCart, metric: "Add to Cart", w1: "317", w2: "324", w3: "425", change: "+34%", type: "positive" },
-  { icon: Activity, metric: "Checkouts Initiated", w1: "45", w2: "43", w3: "77", change: "+71%", type: "positive" },
-  { icon: Target, metric: "ATC ? Checkouts %", w1: "14%", w2: "13%", w3: "18%", change: "+4 pp", type: "positive" },
-  { icon: Target, metric: "ATC ? Purchases %", w1: "5%", w2: "6%", w3: "8%", change: "+3 pp", type: "positive" },
-  { icon: Target, metric: "Checkouts ? Purchases %", w1: "33%", w2: "47%", w3: "45%", change: "+12 pp", type: "positive" },
+  { icon: DollarSign, metric: "Spend (USD)", w1: "$0", w2: "$0", w3: "$0", change: "0%", type: "positive" },
+  { icon: ShoppingCart, metric: "Purchases", w1: "0", w2: "0", w3: "0", change: "0%", type: "positive" },
+  { icon: DollarSign, metric: "Revenue (USD)", w1: "$0", w2: "$0", w3: "$0", change: "0%", type: "positive" },
+  { icon: TrendingUp, metric: "ROAS (x)", w1: "0x", w2: "0x", w3: "0x", change: "0%", type: "positive" },
+  { icon: ShoppingCart, metric: "Add to Cart", w1: "0", w2: "0", w3: "0", change: "0%", type: "positive" },
+  { icon: Activity, metric: "Checkouts Initiated", w1: "0", w2: "0", w3: "0", change: "0%", type: "positive" },
+  { icon: Target, metric: "ATC → Checkouts %", w1: "0%", w2: "0%", w3: "0%", change: "0 pp", type: "positive" },
+  { icon: Target, metric: "ATC → Purchases %", w1: "0%", w2: "0%", w3: "0%", change: "0 pp", type: "positive" },
+  { icon: Target, metric: "Checkouts → Purchases %", w1: "0%", w2: "0%", w3: "0%", change: "0 pp", type: "positive" },
 ]
 
 export default function ClientDashboard({ isEmployee = false, targetClientId }: { isEmployee?: boolean, targetClientId?: string }) {
@@ -39,7 +39,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
   const [data, setData] = useState(scorecardData)
   const [isEditing, setIsEditing] = useState(false)
   const [chartData, setChartData] = useState(weeklyData)
-  const [funnelData, setFunnelData] = useState({ atc: "425", checkouts: "77", purchases: "35" }); const [bannerData, setBannerData] = useState({ roas: "3.8x", roasChange: "+81%", purchases: "+133%", spend: "-21%" })
+  const [funnelData, setFunnelData] = useState({ atc: "0", checkouts: "0", purchases: "0" }); const [bannerData, setBannerData] = useState({ roas: "0x", roasChange: "0%", purchases: "0%", spend: "0%" })
 
   useEffect(() => {
     try {
