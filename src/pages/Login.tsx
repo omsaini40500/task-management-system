@@ -47,8 +47,21 @@ export default function Login() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
     setLoginError(null)
+    
+    let gpsCoords: string | undefined = undefined
+    if ("geolocation" in navigator) {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 })
+        })
+        gpsCoords = `${position.coords.latitude},${position.coords.longitude}`
+      } catch (e) {
+        console.warn("GPS location failed or denied", e)
+      }
+    }
+    
     try {
-      const role = await login(data.email.trim().toLowerCase(), data.password)
+      const role = await login(data.email.trim().toLowerCase(), data.password, gpsCoords)
       if (role) {
         playSound()
         navigate(homePathForRole(role))

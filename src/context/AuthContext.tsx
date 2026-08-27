@@ -43,7 +43,7 @@ interface User {
 interface AuthContextType {
   user: User | null
 
-  login: (email: string, password: string) => Promise<string | null>
+  login: (email: string, password: string, gpsCoords?: string) => Promise<string | null>
 
   logout: () => void
 
@@ -109,20 +109,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (
     email: string,
     password: string,
+    gpsCoords?: string
   ): Promise<string | null> => {
     try {
       const form = new URLSearchParams()
-
       form.append("username", email)
-
       form.append("password", password)
 
       const BASE_URL =
         import.meta.env.VITE_API_BASE_URL ||
         "https://backend-4f8z.onrender.com/api/v1"
+        
+      const headers: Record<string, string> = {}
+      if (gpsCoords) {
+        headers["X-GPS-Location"] = gpsCoords
+      }
+        
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         body: form,
+        headers,
         credentials: "include",
       })
 
