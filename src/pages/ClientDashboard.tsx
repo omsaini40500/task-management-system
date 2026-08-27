@@ -31,7 +31,7 @@ const scorecardData = [
   { icon: Target, metric: "Checkouts ? Purchases %", w1: "33%", w2: "47%", w3: "45%", change: "+12 pp", type: "positive" },
 ]
 
-export default function ClientDashboard() {
+export default function ClientDashboard({ isEmployee = false }: { isEmployee?: boolean }) {
   return (
     <div className="space-y-6 mb-8">
       {/* Header Banner */}
@@ -183,8 +183,13 @@ export default function ClientDashboard() {
           transition={{ delay: 0.4 }}
           className="card p-6 border border-gray-800"
         >
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">KEY PERFORMANCE SCORECARD</h3>
+            {isEmployee && (
+              <button className="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
+                Edit Scorecard
+              </button>
+            )}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">

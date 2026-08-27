@@ -45,6 +45,7 @@ import ApprovalCenter from "./pages/ApprovalCenter"
 import CampaignManagement from "./pages/CampaignManagement"
 
 import ClientManagement from "./pages/ClientManagement"
+import PerformanceMarketing from "./pages/PerformanceMarketing"
 
 import ImportExport from "./pages/ImportExport"
 
@@ -142,6 +143,10 @@ function AppRoutes() {
         <Route index element={<Navigate to={homePath} replace />} />
 
         {/* Core & Work */}
+        <Route
+          path="performance"
+          element={<PerformanceMarketing />}
+        />
         <Route
           path="dashboard"
           element={

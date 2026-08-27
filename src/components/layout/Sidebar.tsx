@@ -10,7 +10,7 @@ import {
   CheckSquare,
   FolderOpen,
   Users,
-  BarChart3,
+  BarChart3, TrendingUp,
   Settings,
   Bell,
   Activity,
@@ -46,6 +46,8 @@ import { api } from "../../api/client"
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
 
+  { icon: TrendingUp, label: "Performance", to: "/performance" },
+
   { icon: CheckSquare, label: "Tasks", to: "/tasks" },
 
   { icon: FolderOpen, label: "Projects", to: "/projects" },
@@ -64,7 +66,7 @@ const navItems = [
 
   { icon: Users, label: "Team", to: "/team" },
 
-  { icon: BarChart3, label: "Reports", to: "/reports" },
+  { icon: BarChart3, TrendingUp, label: "Reports", to: "/reports" },
 
   { icon: Activity, label: "Activity", to: "/activity" },
 
@@ -170,6 +172,9 @@ export default function Sidebar({
 
     if (item.label === "Finance") {
       return user?.role === "super_admin" || (user?.department && user.department.toLowerCase().includes("finance"))
+    }
+    if (item.label === "Performance") {
+      return user?.role === "super_admin" || (user?.department && user.department.toLowerCase().includes("performance"))
     }
     return true
   })
