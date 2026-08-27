@@ -39,7 +39,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
   const [data, setData] = useState(scorecardData)
   const [isEditing, setIsEditing] = useState(false)
   const [chartData, setChartData] = useState(weeklyData)
-  const [funnelData, setFunnelData] = useState({ atc: "425", checkouts: "77", purchases: "35" })
+  const [funnelData, setFunnelData] = useState({ atc: "425", checkouts: "77", purchases: "35" }); const [bannerData, setBannerData] = useState({ roas: "3.8x", roasChange: "+81%", purchases: "+133%", spend: "-21%" })
 
   useEffect(() => {
     try {
@@ -65,6 +65,15 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           atc: atcRow.w3,
           checkouts: checkoutsRow.w3,
           purchases: purRow.w3
+        })
+      }
+      
+      if (roasRow && purRow && spendRow) {
+        setBannerData({
+          roas: roasRow.w3,
+          roasChange: roasRow.change,
+          purchases: purRow.change,
+          spend: spendRow.change
         })
       }
     } catch (e) {
@@ -124,27 +133,30 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-indigo-600 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6"
+        className="bg-gradient-to-br from-indigo-900 via-purple-900 to-black rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_40px_rgba(99,102,241,0.2)] border border-white/10 relative overflow-hidden"
       >
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-2">PERFORMANCE EFFICIENCY ACCELERATED IN WEEK 3</h1>
-          <p className="text-indigo-100">Spend remained controlled while conversion volume, revenue and ROAS expanded materially.</p>
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+        
+        <div className="relative z-10">
+          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-100 to-gray-300 mb-2 tracking-tight">PERFORMANCE EFFICIENCY ACCELERATED</h1>
+          <p className="text-indigo-200/80 font-medium text-sm max-w-xl leading-relaxed">Spend remained controlled while conversion volume, revenue and ROAS expanded materially across all funnels.</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-white/10 rounded-xl p-4 min-w-[120px] text-center backdrop-blur-sm">
-            <div className="text-3xl font-bold text-white">3.8x</div>
-            <div className="text-xs text-indigo-100 font-medium mt-1">WEEK 3 ROAS</div>
-            <div className="text-[10px] text-green-300 mt-1">Up 81% vs Week 1</div>
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 min-w-[130px] text-center backdrop-blur-md shadow-xl hover:-translate-y-1 transition-transform duration-300">
+            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">{bannerData.roas}</div>
+            <div className="text-[11px] tracking-widest text-indigo-200 font-bold mt-2 uppercase">Week 3 ROAS</div>
+            <div className="text-[10px] text-emerald-400/80 mt-1 font-medium tracking-wide">Change: {bannerData.roasChange}</div>
           </div>
-          <div className="bg-white/10 rounded-xl p-4 min-w-[120px] text-center backdrop-blur-sm">
-            <div className="text-3xl font-bold text-white">+133%</div>
-            <div className="text-xs text-indigo-100 font-medium mt-1">PURCHASES</div>
-            <div className="text-[10px] text-green-300 mt-1">vs Week 1</div>
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 min-w-[130px] text-center backdrop-blur-md shadow-xl hover:-translate-y-1 transition-transform duration-300">
+            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{bannerData.purchases}</div>
+            <div className="text-[11px] tracking-widest text-indigo-200 font-bold mt-2 uppercase">Purchases</div>
+            <div className="text-[10px] text-blue-400/80 mt-1 font-medium tracking-wide">Change vs W1</div>
           </div>
-          <div className="bg-white/10 rounded-xl p-4 min-w-[120px] text-center backdrop-blur-sm">
-            <div className="text-3xl font-bold text-white">-21%</div>
-            <div className="text-xs text-indigo-100 font-medium mt-1">SPEND</div>
-            <div className="text-[10px] text-green-300 mt-1">vs Week 1</div>
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 min-w-[130px] text-center backdrop-blur-md shadow-xl hover:-translate-y-1 transition-transform duration-300">
+            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">{bannerData.spend}</div>
+            <div className="text-[11px] tracking-widest text-indigo-200 font-bold mt-2 uppercase">Spend</div>
+            <div className="text-[10px] text-purple-400/80 mt-1 font-medium tracking-wide">Change vs W1</div>
           </div>
         </div>
       </motion.div>
@@ -156,7 +168,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-6 border border-gray-800"
+          className="bg-[#0B0D17]/90 backdrop-blur-2xl p-6 border border-white/10 rounded-3xl shadow-xl hover:border-indigo-500/30 hover:shadow-[0_8px_30px_rgba(99,102,241,0.15)] transition-all duration-500"
         >
           <div className="mb-6">
             <h3 className="text-lg font-bold text-white">EFFICIENCY IMPROVEMENT OVER TIME</h3>
@@ -189,7 +201,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="card p-6 border border-gray-800"
+          className="bg-[#0B0D17]/90 backdrop-blur-2xl p-6 border border-white/10 rounded-3xl shadow-xl hover:border-indigo-500/30 hover:shadow-[0_8px_30px_rgba(99,102,241,0.15)] transition-all duration-500"
         >
           <div className="mb-6">
             <h3 className="text-lg font-bold text-white">REVENUE & ROAS TREND</h3>
@@ -197,17 +209,24 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
-                <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} tickLine={false} />
-                <YAxis yAxisId="left" stroke="#9ca3af" fontSize={12} tickFormatter={(val) => `$${val}`} />
-                <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={12} tickFormatter={(val) => `${val}x`} />
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#818cf8" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeOpacity={0.05} vertical={false} />
+                <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis yAxisId="left" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
+                <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}x`} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: 'white' }}
-                  itemStyle={{ color: 'white' }}
+                  contentStyle={{ backgroundColor: 'rgba(17, 24, 39, 0.8)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.1)', color: 'white', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)' }}
+                  itemStyle={{ color: 'white', fontWeight: 500 }}
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                 />
-                <Legend />
-                <Bar yAxisId="left" dataKey="revenue" name="Revenue (USD)" fill="#0ea5e9" radius={[4, 4, 0, 0]} maxBarSize={60} />
-                <Line yAxisId="right" type="monotone" dataKey="roas" name="ROAS (x)" stroke="#10b981" strokeWidth={3} dot={{ r: 6, fill: "#10b981", strokeWidth: 2, stroke: "#111827" }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+                <Bar yAxisId="left" dataKey="revenue" name="Revenue (USD)" fill="url(#colorRevenue)" radius={[6, 6, 0, 0]} maxBarSize={40} />
+                <Line yAxisId="right" type="monotone" dataKey="roas" name="ROAS (x)" stroke="#34d399" strokeWidth={4} dot={{ r: 6, fill: "#10b981", strokeWidth: 3, stroke: "#0B0D17" }} activeDot={{ r: 8, fill: "#34d399", strokeWidth: 0, stroke: "#0B0D17", filter: "drop-shadow(0px 0px 5px rgba(52,211,153,0.8))" }} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -229,35 +248,35 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           <div className="mb-6">
             <h3 className="text-lg font-bold text-white">WEEK 3 FUNNEL PERFORMANCE</h3>
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center space-y-2 w-full max-w-sm mx-auto mt-4">
+          <div className="flex-1 flex flex-col items-center justify-center space-y-3 w-full max-w-sm mx-auto mt-4 group">
             {/* Level 1 */}
-            <div className="w-full bg-[#1e293b] text-white rounded-t-lg rounded-b-md p-4 text-center border-b-[16px] border-transparent" style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 15% 100%)" }}>
-              <div className="text-3xl font-bold">{funnelData.atc}</div>
-              <div className="text-xs text-gray-400">Add to Carts</div>
+            <div className="w-full bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-t-xl rounded-b-md p-4 text-center border-t border-white/10 shadow-lg hover:brightness-110 transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 15% 100%)" }}>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400">{funnelData.atc}</div>
+              <div className="text-xs text-gray-300 font-medium tracking-wide uppercase mt-1">Add to Carts</div>
             </div>
             
             {/* Level 2 */}
-            <div className="w-[85%] bg-[#3b82f6] text-white rounded-md p-4 text-center" style={{ clipPath: "polygon(0 0, 100% 0, 80% 100%, 20% 100%)" }}>
-              <div className="text-2xl font-bold">{funnelData.checkouts}</div>
-              <div className="text-xs text-blue-200">Checkouts Initiated</div>
+            <div className="w-[85%] bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-md p-4 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:brightness-110 transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 80% 100%, 20% 100%)" }}>
+              <div className="text-2xl font-black text-white">{funnelData.checkouts}</div>
+              <div className="text-xs text-blue-100 font-medium tracking-wide uppercase mt-1">Checkouts Initiated</div>
             </div>
 
             {/* Level 3 */}
-            <div className="w-[68%] bg-[#10b981] text-white rounded-b-lg rounded-t-md p-4 text-center" style={{ clipPath: "polygon(0 0, 100% 0, 90% 100%, 10% 100%)" }}>
-              <div className="text-2xl font-bold">{funnelData.purchases}</div>
-              <div className="text-xs text-green-200">Purchases</div>
+            <div className="w-[68%] bg-gradient-to-r from-emerald-500 to-teal-400 text-white rounded-b-xl rounded-t-md p-4 text-center shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:brightness-110 transition-all duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 90% 100%, 10% 100%)" }}>
+              <div className="text-2xl font-black text-white">{funnelData.purchases}</div>
+              <div className="text-xs text-emerald-100 font-medium tracking-wide uppercase mt-1">Purchases</div>
             </div>
           </div>
           <div className="mt-8 flex items-center justify-between gap-4">
-            <div className="flex-1 bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
-              <div className="text-sm text-gray-400 mb-1">ATC ? CHECKOUTS</div>
-              <div className="text-2xl font-bold text-white">18%</div>
+            <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/5 hover:border-blue-500/30 transition-colors duration-300">
+              <div className="text-xs text-gray-400 mb-1 font-semibold tracking-wider">ATC → CHECKOUTS</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">18%</div>
               <div className="text-xs text-green-400 mt-1">Up from 14% in Week 1</div>
             </div>
-            <div className="flex-1 bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
-              <div className="text-sm text-gray-400 mb-1">ATC ? PURCHASES</div>
-              <div className="text-2xl font-bold text-white">8%</div>
-              <div className="text-xs text-green-400 mt-1">Up from 5% in Week 1</div>
+            <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/5 hover:border-emerald-500/30 transition-colors duration-300">
+              <div className="text-xs text-gray-400 mb-1 font-semibold tracking-wider">ATC → PURCHASES</div>
+              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">8%</div>
+              <div className="text-xs text-emerald-400 mt-1">Up from 5% in Week 1</div>
             </div>
           </div>
         </motion.div>
@@ -267,7 +286,7 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="card p-6 border border-gray-800"
+          className="bg-[#0B0D17]/90 backdrop-blur-2xl p-6 border border-white/10 rounded-3xl shadow-xl hover:border-indigo-500/30 hover:shadow-[0_8px_30px_rgba(99,102,241,0.15)] transition-all duration-500"
         >
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">KEY PERFORMANCE SCORECARD</h3>
@@ -291,35 +310,37 @@ export default function ClientDashboard({ isEmployee = false, targetClientId }: 
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="text-xs text-gray-400 bg-gray-800/50">
+              <thead className="text-[10px] uppercase tracking-widest text-gray-400 bg-white/5 border-b border-white/10">
                 <tr>
-                  <th className="px-4 py-3 font-medium rounded-tl-lg">METRICS</th>
-                  <th className="px-4 py-3 font-medium text-right">WEEK 1<br/>01-09th</th>
-                  <th className="px-4 py-3 font-medium text-right">WEEK 2<br/>10th-16th</th>
-                  <th className="px-4 py-3 font-medium text-right bg-indigo-500/10 text-indigo-300">WEEK 3<br/>17th-23rd</th>
-                  <th className="px-4 py-3 font-medium text-right rounded-tr-lg">W1 → W3<br/>CHANGE</th>
+                  <th className="px-5 py-4 font-bold rounded-tl-xl">METRICS</th>
+                  <th className="px-5 py-4 font-bold text-right">WEEK 1<br/><span className="text-gray-500 font-normal">01-09th</span></th>
+                  <th className="px-5 py-4 font-bold text-right">WEEK 2<br/><span className="text-gray-500 font-normal">10th-16th</span></th>
+                  <th className="px-5 py-4 font-bold text-right bg-indigo-500/10 text-indigo-300">WEEK 3<br/><span className="text-indigo-400/50 font-normal">17th-23rd</span></th>
+                  <th className="px-5 py-4 font-bold text-right rounded-tr-xl">W1 → W3<br/><span className="text-gray-500 font-normal">CHANGE</span></th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((row, i) => {
                   const Icon = row.icon || DollarSign; // fallback icon if not saved properly
                   return (
-                    <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-300 flex items-center gap-2 whitespace-nowrap">
-                        <DollarSign size={14} className="text-gray-500" />
+                    <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
+                      <td className="px-5 py-4 font-medium text-gray-200 flex items-center gap-3 whitespace-nowrap">
+                        <div className="p-1.5 bg-white/5 rounded-md group-hover:bg-indigo-500/20 transition-colors">
+                          <DollarSign size={14} className="text-gray-400 group-hover:text-indigo-400 transition-colors" />
+                        </div>
                         {row.metric}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-400">
-                        {isEditing ? <input value={row.w1} onChange={(e) => handleChange(i, 'w1', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w1}
+                      <td className="px-5 py-4 text-right text-gray-400 font-medium">
+                        {isEditing ? <input value={row.w1} onChange={(e) => handleChange(i, 'w1', e.target.value)} className="w-20 bg-gray-900/50 border border-gray-700 px-2 py-1 rounded-md text-right focus:border-indigo-500 focus:outline-none" /> : row.w1}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-400">
-                        {isEditing ? <input value={row.w2} onChange={(e) => handleChange(i, 'w2', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w2}
+                      <td className="px-5 py-4 text-right text-gray-400 font-medium">
+                        {isEditing ? <input value={row.w2} onChange={(e) => handleChange(i, 'w2', e.target.value)} className="w-20 bg-gray-900/50 border border-gray-700 px-2 py-1 rounded-md text-right focus:border-indigo-500 focus:outline-none" /> : row.w2}
                       </td>
-                      <td className="px-4 py-3 text-right font-medium text-white bg-indigo-500/5">
-                        {isEditing ? <input value={row.w3} onChange={(e) => handleChange(i, 'w3', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.w3}
+                      <td className="px-5 py-4 text-right font-bold text-white bg-indigo-500/5 shadow-[inset_2px_0_0_rgba(99,102,241,0.2)]">
+                        {isEditing ? <input value={row.w3} onChange={(e) => handleChange(i, 'w3', e.target.value)} className="w-20 bg-indigo-900/50 border border-indigo-500/50 px-2 py-1 rounded-md text-right focus:border-indigo-400 focus:outline-none text-white" /> : row.w3}
                       </td>
-                      <td className={`px-4 py-3 text-right font-medium text-green-400`}>
-                        {isEditing ? <input value={row.change} onChange={(e) => handleChange(i, 'change', e.target.value)} className="w-16 bg-gray-700 px-1 rounded text-right" /> : row.change}
+                      <td className={`px-5 py-4 text-right font-bold ${row.change?.includes('-') ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        {isEditing ? <input value={row.change} onChange={(e) => handleChange(i, 'change', e.target.value)} className="w-20 bg-gray-900/50 border border-gray-700 px-2 py-1 rounded-md text-right focus:border-indigo-500 focus:outline-none" /> : row.change}
                       </td>
                     </tr>
                   )
