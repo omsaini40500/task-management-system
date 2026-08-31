@@ -273,8 +273,8 @@ function TaskDrawer({
 
   const [reason, setReason] = useState(task.pendingReason || "")
 
-  const canDelete = role === "super_admin" || task.assignedBy === user?.id
-  const canEdit = task.assignedBy === user?.id
+  const canDelete = role === "super_admin" || task.assignedById === user?.id
+  const canEdit = task.assignedById === user?.id
   const canUpdateStatus = task.assignedTo.includes(user?.id || "")
 
   const handleStatusChange = (newStatus: TaskStatus) => {

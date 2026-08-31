@@ -56,6 +56,7 @@ export interface Task {
   assignedTo: string[]
 
   assignedBy: string
+  assignedById?: string
 
   project: string
 
