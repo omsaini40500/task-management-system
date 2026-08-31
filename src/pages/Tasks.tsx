@@ -273,8 +273,8 @@ function TaskDrawer({
 
   const [reason, setReason] = useState(task.pendingReason || "")
 
-  const canDelete = task.assignedBy === user?.id
-
+  const canDelete = role === "super_admin"
+  const canEdit = task.assignedBy === user?.id
   const canUpdateStatus = task.assignedTo.includes(user?.id || "")
 
   const handleStatusChange = (newStatus: TaskStatus) => {
@@ -317,25 +317,25 @@ function TaskDrawer({
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {canEdit && (
+            <button
+              onClick={() => {
+                onEdit(task)
+              }}
+              className="px-2 py-1 rounded text-xs transition-smooth hover:bg-blue-500/20 text-blue-400"
+            >
+              <Edit2 size={12} className="inline mr-1" />
+              Edit
+            </button>
+          )}
           {canDelete && (
-            <>
-              <button
-                onClick={() => {
-                  onEdit(task)
-                }}
-                className="px-2 py-1 rounded text-xs transition-smooth hover:bg-blue-500/20 text-blue-400"
-              >
-                <Edit2 size={12} className="inline mr-1" />
-                Edit
-              </button>
-              <button
-                onClick={() => onDelete(task.id)}
-                className="px-2 py-1 rounded text-xs transition-smooth hover:bg-red-500/20 text-red-400"
-              >
-                <Trash size={12} className="inline mr-1" />
-                Delete
-              </button>
-            </>
+            <button
+              onClick={() => onDelete(task.id)}
+              className="px-2 py-1 rounded text-xs transition-smooth hover:bg-red-500/20 text-red-400"
+            >
+              <Trash size={12} className="inline mr-1" />
+              Delete
+            </button>
           )}
           <button
             onClick={onClose}
