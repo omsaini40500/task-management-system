@@ -115,6 +115,13 @@ function TaskCard({
   task: ExtendedTask
   onOpen: (t: ExtendedTask) => void
 }) {
+  const { user } = useAuth()
+  const role = user?.role || "member"
+  const isShellomTask = task.assignedTo.some(uid => {
+    const u = globalUsers.find((x: any) => x.id === uid)
+    return u?.department?.toLowerCase() === "shalom" || u?.department?.toLowerCase() === "shellom"
+  })
+
   return (
     <motion.div
       layout
@@ -130,13 +137,18 @@ function TaskCard({
       }}
     >
       <div className="flex items-start justify-between mb-2">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <div
             className={`w-1.5 h-1.5 rounded-full ${priorityDot[task.priority]}`}
           />
           <span className="text-xs font-mono" style={{ color: "#4b5563" }}>
             #{task.id.replace("t", "TK-")}
           </span>
+          {isShellomTask && role === "super_admin" && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30 whitespace-nowrap">
+              Shellom
+            </span>
+          )}
         </div>
         <button
           className="transition-smooth p-0.5 rounded"
